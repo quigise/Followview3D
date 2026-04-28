@@ -1,0 +1,3428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FollowView3D — Visites virtuelles 3D & 360° pour professionnels</title>
+<meta name="description" content="FollowView3D crée des visites virtuelles immersives pour hôtels, commerces, salons, restaurants et espaces professionnels. Basé à Paris, partout en France.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  /* Palette FollowView3D — version graphite luxe */
+  --cream: #F3F0E7;            /* fond crème principal */
+  --cream-light: #F8F5EC;      /* variante éclaircie */
+  --white: #FFFFFF;
+  
+  /* Couleur signature : graphite profond */
+  --graphite: #2E3336;         /* couleur signature : titres, accents, soulignements */
+  --graphite-deep: #1A1D1C;    /* version plus foncée pour les contrastes forts */
+  --graphite-soft: #4A5054;    /* version douce pour textes secondaires */
+  
+  /* Jaune : RÉSERVÉ aux CTA et hovers uniquement */
+  --yellow: #F3C532;           /* jaune signature du logo */
+  --yellow-deep: #E5B11C;      /* hover du jaune */
+  
+  /* Gris fonctionnels */
+  --metal: #A0A6A4;            /* gris argenté du logo */
+  --metal-dark: #586062;       /* gris du texte FollowView */
+  --dark: #393D3C;             /* gris foncé chaud */
+  --black: #1A1D1C;            /* noir doux */
+  
+  /* Ombres et effets */
+  --shadow-soft: 0 10px 40px -10px rgba(57, 61, 60, 0.12);
+  --shadow-medium: 0 20px 60px -20px rgba(57, 61, 60, 0.18);
+  --shadow-graphite: 0 10px 30px -10px rgba(46, 51, 54, 0.35);
+  --shadow-yellow: 0 10px 30px -10px rgba(243, 197, 50, 0.45);
+  --radius: 20px;
+  --radius-lg: 28px;
+  --radius-sm: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Offset universel pour les ancres (la nav fixe ne masque plus les sections) */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  line-height: 1.6;
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  line-height: 1.15;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav.scrolled {
+  background: rgba(243, 240, 231, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom-color: rgba(160, 166, 164, 0.15);
+  box-shadow: 0 4px 20px rgba(57, 61, 60, 0.05);
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: 88px;
+  transition: min-height 0.3s ease;
+}
+
+.nav.scrolled .nav-inner {
+  min-height: 78px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  transition: color 0.4s ease;
+}
+
+/* Glassmorphism premium UNIQUEMENT pour la nav, pas le footer */
+.nav .logo {
+  padding: 8px 14px 8px 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+.nav.scrolled .logo {
+  color: var(--graphite);
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+}
+
+/* Logo agrandi UNIQUEMENT dans la nav, pas dans le footer */
+.nav .logo-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.nav.scrolled .logo-icon {
+  width: 56px;
+  height: 56px;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(243, 240, 231, 0.85);
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav.scrolled .nav-links a {
+  color: var(--dark);
+}
+
+.nav-links a:hover { color: var(--yellow); }
+.nav.scrolled .nav-links a:hover { color: var(--graphite); }
+
+.nav-cta {
+  background: var(--yellow);
+  color: var(--graphite-deep) !important;
+  padding: 11px 22px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 14px rgba(243, 197, 50, 0.3);
+}
+
+.nav-cta:hover {
+  background: #FFD250;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(243, 197, 50, 0.5);
+}
+
+.nav.scrolled .nav-cta {
+  background: var(--graphite);
+  color: var(--cream) !important;
+  box-shadow: none;
+}
+
+.nav.scrolled .nav-cta:hover {
+  background: var(--yellow);
+  color: var(--graphite-deep) !important;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--cream);
+  transition: all 0.3s;
+}
+.nav.scrolled .menu-toggle span {
+  background: var(--graphite);
+}
+
+/* ===== HERO PRINCIPAL COMPACT ===== */
+.hero-main {
+  position: relative;
+  min-height: 72vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--graphite-deep);
+  color: var(--cream);
+  isolation: isolate;
+  padding: 120px 0 80px;
+}
+
+.hero-main .hero-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-main .hero-media video,
+.hero-main .hero-media img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+}
+
+.hero-main .hero-media video { z-index: 1; }
+.hero-main .hero-media img { z-index: 0; }
+
+/* Image principale du hero : Ken Burns subtil pour donner du mouvement */
+.hero-main .hero-main-image {
+  animation: kenBurnsHero 22s ease-in-out infinite alternate;
+}
+
+@keyframes kenBurnsHero {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes kenBurns {
+  0% { transform: translate(-50%, -50%) scale(1.02); }
+  100% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+.hero-main .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    /* Voile sombre à gauche pour le titre, transparent à droite pour préserver le logo et le building */
+    linear-gradient(90deg, rgba(17, 17, 17, 0.72) 0%, rgba(17, 17, 17, 0.45) 35%, rgba(17, 17, 17, 0.15) 60%, rgba(17, 17, 17, 0.0) 80%),
+    /* Léger voile haut + bas pour la nav et le scroll indicator */
+    linear-gradient(180deg, rgba(17, 17, 17, 0.35) 0%, transparent 18%, transparent 80%, rgba(17, 17, 17, 0.4) 100%);
+  pointer-events: none;
+}
+
+.hero-main .hero-overlay::before {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 50%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(244, 194, 31, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  filter: blur(60px);
+  z-index: -1;
+}
+
+.hero-main .hero-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.hero-main .hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.hero-main .hero-inner {
+  max-width: 880px;
+}
+
+.hero-main .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--cream);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+.hero-main .hero-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 10px rgba(244, 194, 31, 0.7);
+}
+
+.hero-main h1 {
+  font-size: clamp(38px, 5.5vw, 72px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--cream);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+}
+
+.hero-main h1 .accent {
+  color: var(--cream);
+  font-style: italic;
+  font-weight: 800;
+  opacity: 0.92;
+  position: relative;
+}
+
+.hero-main h1 .accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: drawLine 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+}
+
+@keyframes drawLine {
+  to { transform: scaleX(1); }
+}
+
+.hero-main .hero-subtitle {
+  font-size: clamp(15px, 1.2vw, 18px);
+  color: var(--cream);
+  opacity: 0.8;
+  margin-bottom: 36px;
+  max-width: 620px;
+  line-height: 1.55;
+  font-weight: 400;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+}
+
+.hero-main .hero-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--yellow);
+  color: var(--graphite-deep);
+  box-shadow: var(--shadow-yellow);
+}
+
+.btn-primary:hover {
+  background: #FFD250;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -10px rgba(244, 194, 31, 0.7);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--cream);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-secondary:hover {
+  background: var(--cream);
+  color: var(--graphite-deep);
+  border-color: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-dark {
+  background: var(--black);
+  color: var(--white);
+}
+
+.btn-dark:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+/* Scroll indicator du hero principal */
+.hero-main .hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(247, 243, 234, 0.55);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+  pointer-events: none;
+}
+
+.hero-main .hero-scroll-line {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(180deg, transparent 0%, rgba(247, 243, 234, 0.3) 50%, transparent 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-main .hero-scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -38px;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: linear-gradient(180deg, transparent 0%, var(--yellow) 50%, transparent 100%);
+  animation: scrollDown 2.2s ease-in-out infinite;
+}
+
+@keyframes scrollDown {
+  0% { top: -38px; }
+  100% { top: 100%; }
+}
+
+/* ===== SECTION 3 EXPERTISES ===== */
+.expertises-section {
+  background: var(--cream);
+  padding: 100px 0;
+  position: relative;
+}
+
+.expertises-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 60px;
+}
+
+.expertises-header h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--graphite-deep);
+}
+
+/* Grille premium : 1 grande carte (3D) à gauche + 2 cartes empilées à droite */
+.expertises-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.expertise-card {
+  position: relative;
+  border-radius: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  background: var(--graphite-deep);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.expertise-featured {
+  grid-row: 1 / 3;
+  min-height: 580px;
+}
+
+.expertise-secondary {
+  min-height: 280px;
+}
+
+.expertise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -20px rgba(17, 17, 17, 0.5);
+  border-color: rgba(244, 194, 31, 0.35);
+}
+
+/* Média de fond (vidéo + fallback image) */
+.expertise-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.expertise-media video,
+.expertise-media img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Vidéo au-dessus de l'image fallback : la vidéo prend la place dès qu'elle se charge */
+.expertise-media video { z-index: 2; }
+.expertise-media img { z-index: 1; }
+
+.expertise-card:hover .expertise-media video,
+.expertise-card:hover .expertise-media img {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Overlay sombre élégant */
+.expertise-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(17, 17, 17, 0.1) 0%, rgba(17, 17, 17, 0.3) 50%, rgba(17, 17, 17, 0.92) 100%);
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.expertise-card:hover .expertise-overlay {
+  background:
+    linear-gradient(180deg, rgba(17, 17, 17, 0.15) 0%, rgba(17, 17, 17, 0.4) 45%, rgba(17, 17, 17, 0.94) 100%);
+}
+
+/* Numéro 01 / 02 / 03 en haut à droite */
+.expertise-index {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 3;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(247, 243, 234, 0.5);
+  pointer-events: none;
+}
+
+.expertise-featured .expertise-index {
+  font-size: 14px;
+}
+
+/* Contenu de la carte (badge + titre + texte + CTA) */
+.expertise-content {
+  position: relative;
+  z-index: 2;
+  padding: 32px;
+  width: 100%;
+  color: var(--cream);
+}
+
+.expertise-featured .expertise-content {
+  padding: 44px;
+}
+
+.expertise-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: 'Sora', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.expertise-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(244, 194, 31, 0.7);
+}
+
+.expertise-content h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 12px;
+  color: var(--cream);
+}
+
+.expertise-featured .expertise-content h3 {
+  font-size: clamp(28px, 2.4vw, 36px);
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.expertise-content p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(247, 243, 234, 0.78);
+  margin-bottom: 20px;
+  max-width: 460px;
+}
+
+.expertise-featured .expertise-content p {
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.expertise-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.expertise-cta svg {
+  transition: transform 0.3s ease;
+}
+
+.expertise-card:hover .expertise-cta {
+  background: var(--yellow);
+  color: var(--graphite-deep);
+  border-color: var(--yellow);
+}
+
+.expertise-card:hover .expertise-cta svg {
+  transform: translateX(3px);
+}
+
+/* Carte 3D mise en avant : CTA légèrement plus marqué */
+.expertise-featured .expertise-cta {
+  font-size: 14px;
+  padding: 12px 22px;
+}
+
+/* ===== SECTION VALUE ===== */
+.section {
+  padding: 100px 0;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 64px;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--graphite);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 16px;
+  position: relative;
+  padding-left: 28px;
+}
+
+.section-eyebrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 20px;
+  height: 1px;
+  background: var(--graphite);
+}
+
+.section h2 {
+  font-size: clamp(30px, 3.5vw, 46px);
+  margin-bottom: 18px;
+  line-height: 1.1;
+}
+
+.section-subtitle {
+  font-size: 17px;
+  color: var(--dark);
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.value-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(160, 166, 164, 0.08);
+}
+
+.value-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--graphite);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-medium);
+}
+
+.value-card:hover::before { transform: scaleX(1); }
+
+.value-icon {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--graphite) 0%, var(--graphite-deep) 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-graphite);
+}
+
+.value-card h3 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.value-card p {
+  color: var(--dark);
+  opacity: 0.75;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* ===== SECTION SERVICES ===== */
+.services-section {
+  background: var(--white);
+  border-radius: 40px 40px 0 0;
+  margin-top: 40px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.service-card {
+  background: var(--cream);
+  border-radius: var(--radius);
+  padding: 36px 24px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 160px;
+}
+
+.service-card:hover {
+  background: var(--white);
+  border-color: var(--graphite);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-soft);
+}
+
+.service-icon {
+  width: 48px; height: 48px;
+  background: var(--white);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite);
+  margin-bottom: 20px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(57, 61, 60, 0.06);
+}
+
+.service-card:hover .service-icon {
+  background: var(--graphite);
+  color: var(--cream);
+}
+
+.service-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--graphite);
+  margin-top: auto;
+  letter-spacing: -0.01em;
+}
+
+/* ===== SECTION DEMO (DARK) ===== */
+.demo-section {
+  background: var(--cream);
+  color: var(--dark);
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(46, 51, 54, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(46, 51, 54, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.demo-section .section-eyebrow {
+  color: var(--graphite);
+}
+
+.demo-section h2 .accent {
+  color: var(--graphite);
+  font-style: italic;
+}
+
+.demo-frame {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid rgba(46, 51, 54, 0.12);
+  box-shadow: 0 30px 80px -30px rgba(57, 61, 60, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.demo-iframe-container {
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--cream);
+  position: relative;
+}
+
+.demo-iframe-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ===== SECTION SITE INTERNET ===== */
+.web-section {
+  background: var(--cream);
+  padding: 120px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Décor d'arrière-plan : halos subtils */
+.web-bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(244, 194, 31, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(46, 51, 54, 0.05) 0%, transparent 50%);
+}
+
+.web-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero du service */
+.web-hero {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 70px;
+}
+
+.web-hero h2 {
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--graphite-deep);
+  margin-bottom: 20px;
+  margin-top: 12px;
+}
+
+.web-accent {
+  color: var(--graphite);
+  font-style: italic;
+  position: relative;
+}
+
+.web-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+}
+
+.web-hero-subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--graphite-soft);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* Mockup laptop + mobile */
+.web-mockup {
+  max-width: 940px;
+  margin: 0 auto 90px;
+  padding: 0 20px;
+  position: relative;
+}
+
+.web-mockup-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 30px 60px rgba(46, 51, 54, 0.18)) drop-shadow(0 10px 20px rgba(46, 51, 54, 0.08));
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.web-mockup:hover .web-mockup-image {
+  transform: translateY(-4px);
+}
+
+/* Cartes valeur (3 piliers) */
+.web-values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 100px;
+}
+
+.web-value-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 36px 30px;
+  border: 1px solid rgba(46, 51, 54, 0.06);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.web-value-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px -20px rgba(46, 51, 54, 0.18);
+  border-color: rgba(244, 194, 31, 0.4);
+}
+
+.web-value-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--graphite);
+  margin-bottom: 18px;
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--cream);
+  border-radius: 100px;
+}
+
+.web-value-card h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 12px;
+  letter-spacing: -0.015em;
+}
+
+.web-value-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--graphite-soft);
+}
+
+/* Header "Ce qu'on inclut" */
+.web-includes-header,
+.web-process-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 50px;
+}
+
+.web-includes-header h3,
+.web-process-header h3 {
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--graphite-deep);
+  margin-top: 12px;
+}
+
+/* Grille des inclusions (6 cartes minimalistes) */
+.web-includes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 100px;
+}
+
+.web-include {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(46, 51, 54, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+
+.web-include:hover {
+  border-color: var(--graphite);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(46, 51, 54, 0.12);
+}
+
+.web-include-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--cream);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.web-include:hover .web-include-icon {
+  background: var(--graphite);
+  color: var(--cream);
+}
+
+.web-include h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Process : 4 étapes connectées par une ligne pointillée */
+.web-process {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+  margin-bottom: 100px;
+}
+
+.web-process::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--graphite) 0 8px, transparent 8px 16px);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.web-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.web-step-num {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  background: var(--white);
+  border: 2px solid var(--graphite);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--graphite-deep);
+  transition: all 0.3s ease;
+}
+
+.web-step:hover .web-step-num {
+  background: var(--graphite);
+  color: var(--cream);
+  transform: scale(1.08);
+}
+
+.web-step h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.web-step p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--graphite-soft);
+}
+
+/* CTA final — version claire avec halo jaune signature */
+.web-cta-final {
+  background: linear-gradient(135deg, var(--white) 0%, var(--cream-light) 100%);
+  border-radius: 28px;
+  padding: 56px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(244, 194, 31, 0.25);
+  box-shadow: 0 20px 60px -25px rgba(46, 51, 54, 0.18);
+}
+
+.web-cta-final::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(244, 194, 31, 0.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.web-cta-final::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.web-cta-final h3 {
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.web-cta-final p {
+  font-size: 16px;
+  color: var(--graphite-soft);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.web-cta-final .btn {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SECTION DOOH (Écrans dynamiques) — version claire ===== */
+.dooh-section {
+  background: var(--cream);
+  padding: 120px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dooh-bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(244, 194, 31, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(46, 51, 54, 0.05) 0%, transparent 50%);
+}
+
+.dooh-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero du service */
+.dooh-hero {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 70px;
+}
+
+.dooh-hero h2 {
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--graphite-deep);
+  margin-bottom: 20px;
+  margin-top: 12px;
+}
+
+.dooh-accent {
+  color: var(--graphite);
+  font-style: italic;
+  position: relative;
+}
+
+.dooh-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+}
+
+.dooh-hero-subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--graphite-soft);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.dooh-hero-subtitle strong {
+  color: var(--graphite-deep);
+  font-weight: 700;
+}
+
+/* Mockup totem premium */
+.dooh-mockup {
+  max-width: 760px;
+  margin: 0 auto 90px;
+  padding: 0 20px;
+  position: relative;
+}
+
+.dooh-mockup-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  filter: drop-shadow(0 30px 60px rgba(46, 51, 54, 0.18)) drop-shadow(0 10px 20px rgba(46, 51, 54, 0.08));
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-mockup:hover .dooh-mockup-image {
+  transform: translateY(-4px);
+}
+
+/* Cartes valeur (3 piliers) */
+.dooh-values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 100px;
+}
+
+.dooh-value-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 36px 30px;
+  border: 1px solid rgba(46, 51, 54, 0.06);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-value-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px -20px rgba(46, 51, 54, 0.18);
+  border-color: rgba(244, 194, 31, 0.4);
+}
+
+.dooh-value-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--graphite);
+  margin-bottom: 18px;
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--cream);
+  border-radius: 100px;
+}
+
+.dooh-value-card h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 12px;
+  letter-spacing: -0.015em;
+}
+
+.dooh-value-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--graphite-soft);
+}
+
+/* Header "Ce qu'on inclut" et "Notre méthode" */
+.dooh-includes-header,
+.dooh-process-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 50px;
+}
+
+.dooh-includes-header h3,
+.dooh-process-header h3 {
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--graphite-deep);
+  margin-top: 12px;
+}
+
+/* Grille des inclusions */
+.dooh-includes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 100px;
+}
+
+.dooh-include {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(46, 51, 54, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+
+.dooh-include:hover {
+  border-color: var(--graphite);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(46, 51, 54, 0.12);
+}
+
+.dooh-include-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--cream);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.dooh-include:hover .dooh-include-icon {
+  background: var(--graphite);
+  color: var(--cream);
+}
+
+.dooh-include h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Process : 4 étapes connectées par une ligne pointillée graphite */
+.dooh-process {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+  margin-bottom: 100px;
+}
+
+.dooh-process::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--graphite) 0 8px, transparent 8px 16px);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.dooh-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.dooh-step-num {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  background: var(--white);
+  border: 2px solid var(--graphite);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--graphite-deep);
+  transition: all 0.3s ease;
+}
+
+.dooh-step:hover .dooh-step-num {
+  background: var(--graphite);
+  color: var(--cream);
+  transform: scale(1.08);
+}
+
+.dooh-step h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.dooh-step p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--graphite-soft);
+}
+
+/* CTA final — version claire avec halo jaune signature */
+.dooh-cta-final {
+  background: linear-gradient(135deg, var(--white) 0%, var(--cream-light) 100%);
+  border-radius: 28px;
+  padding: 56px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(244, 194, 31, 0.25);
+  box-shadow: 0 20px 60px -25px rgba(46, 51, 54, 0.18);
+}
+
+.dooh-cta-final::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(244, 194, 31, 0.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.dooh-cta-final::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.dooh-cta-final h3 {
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  color: var(--graphite-deep);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.dooh-cta-final p {
+  font-size: 16px;
+  color: var(--graphite-soft);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.dooh-cta-final .btn {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SECTION TARGETS ===== */
+.targets-section {
+  padding: 100px 0;
+}
+
+.targets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.target-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  cursor: pointer;
+  background: var(--dark);
+}
+
+.target-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+
+.target-card:hover .target-image {
+  transform: scale(1.08);
+}
+
+.target-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(26, 29, 28, 0.55) 70%, rgba(26, 29, 28, 0.95) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  transition: background 0.4s ease;
+}
+
+.target-card:hover .target-overlay {
+  background: linear-gradient(180deg, rgba(26, 29, 28, 0.15) 0%, rgba(26, 29, 28, 0.4) 50%, rgba(26, 29, 28, 0.95) 100%);
+}
+
+.target-card h3 {
+  color: var(--white);
+  font-size: 19px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-card h3::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--cream);
+  border-radius: 50%;
+}
+
+/* Target images — palette réelle harmonisée au logo et à l'univers premium */
+.target-1 { background-image: url('assets/cibles/hotel.png'); }
+.target-2 { background-image: url('assets/cibles/restaurant.png'); }
+.target-3 { background-image: url('assets/cibles/salon.png'); }
+.target-4 { background-image: url('assets/cibles/barber.png'); }
+.target-5 { background-image: url('assets/cibles/showroom.png'); }
+.target-6 { background-image: url('assets/cibles/commerce.png'); }
+.target-7 { background-image: url('assets/cibles/immobilier.png'); }
+.target-8 { background-image: url('assets/cibles/bureau.png'); }
+
+.target-image {
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== SECTION PROCESS ===== */
+.process-section {
+  background: var(--white);
+  padding: 100px 0;
+  border-radius: 40px;
+  margin: 0 32px;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+}
+
+.process-grid::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--graphite) 0 8px, transparent 8px 16px);
+  z-index: 0;
+}
+
+.process-step {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.step-number {
+  width: 60px; height: 60px;
+  background: var(--cream);
+  border: 2px solid var(--graphite);
+  color: var(--graphite);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.process-step:hover .step-number {
+  background: var(--graphite);
+  color: var(--cream);
+  transform: scale(1.1);
+}
+
+.process-step h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.process-step p {
+  font-size: 14px;
+  color: var(--metal);
+  line-height: 1.55;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+/* ===== SECTION SITE VITRINE ===== */
+.vitrine-section {
+  padding: 100px 0;
+}
+
+.vitrine-content {
+  background: linear-gradient(135deg, var(--white) 0%, var(--cream-light) 100%);
+  color: var(--graphite-deep);
+  border-radius: var(--radius-lg);
+  padding: 80px 64px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(244, 194, 31, 0.18);
+  box-shadow: 0 20px 60px -25px rgba(46, 51, 54, 0.15);
+}
+
+.vitrine-content::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(244, 194, 31, 0.18) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.vitrine-content::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -8%;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.vitrine-text {
+  position: relative;
+  z-index: 1;
+}
+
+.vitrine-text h2 {
+  font-size: clamp(28px, 3.2vw, 42px);
+  margin-bottom: 20px;
+  color: var(--graphite-deep);
+}
+
+.vitrine-text p {
+  font-size: 16px;
+  color: var(--graphite-soft);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+.vitrine-mockup {
+  position: relative;
+  z-index: 1;
+}
+
+.mockup-window {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 30px 60px -20px rgba(46, 51, 54, 0.25);
+  transform: rotate(2deg);
+  border: 1px solid rgba(46, 51, 54, 0.06);
+}
+
+.mockup-bar {
+  display: flex;
+  gap: 5px;
+  padding: 4px 8px 10px;
+}
+
+.mockup-bar span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(160, 166, 164, 0.3);
+}
+.mockup-bar span:first-child { background: #FF5F57; }
+.mockup-bar span:nth-child(2) { background: #FFBD2E; }
+.mockup-bar span:nth-child(3) { background: #28C840; }
+
+.mockup-content {
+  background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%);
+  border-radius: 10px;
+  padding: 20px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mockup-line {
+  height: 8px;
+  background: var(--metal);
+  opacity: 0.2;
+  border-radius: 4px;
+}
+.mockup-line.short { width: 60%; }
+.mockup-line.medium { width: 80%; }
+.mockup-block {
+  flex: 1;
+  background: linear-gradient(135deg, var(--graphite) 0%, var(--graphite-deep) 100%);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.mockup-block::after {
+  content: '360°';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--yellow);
+  font-family: 'Sora';
+  font-weight: 700;
+  font-size: 24px;
+}
+
+/* ===== SECTION ZONE ===== */
+.zone-section {
+  padding: 100px 0;
+}
+
+.zone-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 64px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.zone-text h2 {
+  font-size: clamp(28px, 3vw, 38px);
+  margin-bottom: 20px;
+}
+
+.zone-text p {
+  color: var(--dark);
+  opacity: 0.8;
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.zone-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  margin-top: 24px;
+}
+
+.zone-info-icon {
+  width: 40px; height: 40px;
+  background: var(--graphite);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  flex-shrink: 0;
+}
+
+.zone-info-text strong {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+
+.zone-info-text span {
+  color: var(--metal);
+  font-size: 14px;
+}
+
+.zone-map {
+  background: var(--cream);
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(160, 166, 164, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.france-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zone-map:hover .france-map-img {
+  transform: scale(1.03);
+}
+
+/* ===== SECTION CONTACT ===== */
+.contact-section {
+  background: var(--cream);
+  color: var(--dark);
+  padding: 120px 0;
+  border-radius: 40px 40px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.contact-section::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.contact-section .section-eyebrow {
+  color: var(--graphite);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-info h2 {
+  font-size: clamp(30px, 3.5vw, 44px);
+  margin-bottom: 20px;
+  line-height: 1.1;
+  color: var(--black);
+}
+
+.contact-info > p {
+  color: var(--dark);
+  opacity: 0.8;
+  margin-bottom: 36px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--dark);
+  font-size: 15px;
+}
+
+.contact-icon {
+  width: 44px; height: 44px;
+  background: var(--white);
+  border: 1px solid rgba(46, 51, 54, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(57, 61, 60, 0.05);
+}
+
+.contact-form {
+  background: var(--white);
+  border: 1px solid rgba(160, 166, 164, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 20px 60px -20px rgba(57, 61, 60, 0.12);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dark);
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--cream-light);
+  border: 1px solid rgba(160, 166, 164, 0.2);
+  border-radius: 12px;
+  color: var(--black);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--yellow);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(243, 197, 50, 0.15);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--metal);
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%232E3336' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-group select option { background: var(--white); color: var(--black); }
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-yellow);
+}
+
+.form-submit:hover {
+  background: #FFD250;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -10px rgba(243, 197, 50, 0.6);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--cream);
+  color: var(--dark);
+  padding: 60px 0 32px;
+  border-top: 1px solid rgba(160, 166, 164, 0.18);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .logo { color: var(--black); margin-bottom: 16px; }
+.footer-brand p {
+  color: var(--metal-dark);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 320px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.social-link {
+  width: 38px; height: 38px;
+  background: var(--white);
+  border: 1px solid rgba(160, 166, 164, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--metal-dark);
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(57, 61, 60, 0.04);
+}
+
+.social-link:hover {
+  background: var(--yellow);
+  color: var(--black);
+  border-color: var(--yellow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-yellow);
+}
+
+.footer h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 18px;
+  font-family: 'Sora', sans-serif;
+}
+
+.footer ul { list-style: none; }
+.footer ul li { margin-bottom: 10px; }
+.footer ul a {
+  color: var(--metal-dark);
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.footer ul a:hover { color: var(--graphite); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(160, 166, 164, 0.18);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--metal);
+  font-size: 13px;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-bottom-links a {
+  color: var(--metal);
+  transition: color 0.2s;
+}
+.footer-bottom-links a:hover { color: var(--graphite); }
+
+/* ===== ANIMATIONS ON SCROLL ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .targets-grid { grid-template-columns: repeat(3, 1fr); }
+  .process-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
+  .process-grid::before { display: none; }
+  .vitrine-content { grid-template-columns: 1fr; gap: 40px; padding: 60px 40px; }
+  .zone-card { grid-template-columns: 1fr; gap: 40px; padding: 48px 32px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  
+  /* Tablette : grille 1+2 simplifiée, 3D toujours en avant */
+  .expertises-grid { gap: 16px; }
+  .expertise-featured { min-height: 480px; }
+  .expertise-secondary { min-height: 240px; }
+  .expertise-featured .expertise-content { padding: 36px; }
+  .expertise-featured .expertise-content h3 { font-size: clamp(24px, 3vw, 30px); }
+  
+  /* Section Site internet sur tablette */
+  .web-includes-grid { grid-template-columns: repeat(2, 1fr); }
+  .web-process { grid-template-columns: repeat(2, 1fr); gap: 40px 20px; }
+  .web-process::before { display: none; }
+  
+  /* Section DOOH sur tablette */
+  .dooh-includes-grid { grid-template-columns: repeat(2, 1fr); }
+  .dooh-process { grid-template-columns: repeat(2, 1fr); gap: 40px 20px; }
+  .dooh-process::before { display: none; }
+  .dooh-values { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  
+  /* Nav mobile : hauteur adaptée, logo bien visible, pas de débordement */
+  .nav-inner {
+    padding: 12px 18px;
+    min-height: 76px;
+  }
+  .nav.scrolled .nav-inner {
+    min-height: 70px;
+  }
+  
+  /* Logo mobile : plus grand pour l'identification immédiate, dans la nav uniquement */
+  .nav .logo {
+    gap: 10px;
+    font-size: 17px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 14px;
+    /* limite la largeur pour empêcher tout débordement à côté du burger */
+    max-width: calc(100vw - 90px);
+    overflow: hidden;
+  }
+  
+  .nav .logo-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    padding: 3px;
+  }
+  
+  .nav.scrolled .logo-icon {
+    width: 46px;
+    height: 46px;
+  }
+  
+  .nav-links { display: none; }
+  .nav-links.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--white);
+    padding: 24px 20px;
+    gap: 18px;
+    box-shadow: var(--shadow-soft);
+  }
+  .nav-links.mobile-open a { color: var(--dark); }
+  .menu-toggle { display: flex; }
+  
+  /* Hero principal mobile : layout split — image entière en haut, contenu en bas */
+  .hero-main { 
+    min-height: auto;
+    padding: 0;
+    padding-top: 76px; /* compense la hauteur de la nav fixe */
+    display: flex;
+    flex-direction: column;
+    background: var(--graphite-deep);
+  }
+  
+  /* Le bloc média prend une portion fixe en haut, image entière sans rognage */
+  .hero-main .hero-media {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  
+  .hero-main .hero-media img,
+  .hero-main .hero-main-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center right;
+    transform: none;
+    animation: kenBurnsMobile 22s ease-in-out infinite alternate;
+  }
+  
+  @keyframes kenBurnsMobile {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+  
+  /* Overlay : juste un dégradé en bas de l'image pour la transition douce vers le bloc contenu */
+  .hero-main .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 55%, rgba(17, 17, 17, 0.4) 80%, rgba(17, 17, 17, 0.95) 100%);
+  }
+  
+  .hero-main .hero-overlay::before,
+  .hero-main .hero-overlay::after {
+    display: none;
+  }
+  
+  /* Le contenu se place en bas, sur fond graphite-deep */
+  .hero-main .hero-content {
+    position: relative;
+    padding: 32px 22px 44px;
+    background: var(--graphite-deep);
+    margin-top: -1px; /* évite tout joint visible entre image et contenu */
+  }
+  
+  .hero-main h1 { 
+    font-size: clamp(30px, 8vw, 42px);
+    margin-bottom: 18px;
+    line-height: 1.1;
+  }
+  
+  .hero-main .hero-subtitle { 
+    font-size: 14px; 
+    margin-bottom: 28px;
+    line-height: 1.55;
+    max-width: 100%;
+  }
+  
+  .hero-main .hero-buttons { 
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 12px;
+  }
+  
+  .hero-main .btn { 
+    justify-content: center; 
+    padding: 15px 24px;
+  }
+  
+  .hero-main .hero-eyebrow { 
+    font-size: 11px; 
+    padding: 7px 14px; 
+    margin-bottom: 22px;
+  }
+  
+  /* Scroll indicator : caché sur mobile car le layout split est déjà explicite */
+  .hero-main .hero-scroll {
+    display: none;
+  }
+  
+  /* Section expertises : 1 colonne, cartes empilées */
+  .expertises-section { padding: 70px 0; }
+  .expertises-header { margin-bottom: 40px; }
+  .expertises-header h2 { font-size: clamp(24px, 7vw, 34px); }
+  
+  .expertises-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 14px;
+    padding: 0 4px;
+  }
+  
+  .expertise-featured,
+  .expertise-secondary {
+    grid-row: auto;
+    min-height: 320px;
+  }
+  
+  .expertise-featured { min-height: 380px; }
+  
+  .expertise-content { padding: 24px; }
+  .expertise-featured .expertise-content { padding: 28px; }
+  
+  .expertise-content h3 { font-size: 20px; }
+  .expertise-featured .expertise-content h3 { font-size: 24px; }
+  
+  .expertise-content p { font-size: 13px; margin-bottom: 16px; }
+  
+  .expertise-index {
+    top: 18px;
+    right: 22px;
+    font-size: 11px;
+  }
+  
+  .expertise-badge { font-size: 10px; padding: 5px 12px; margin-bottom: 12px; }
+  
+  .section { padding: 70px 0; }
+  .section-header { margin-bottom: 48px; }
+  .section h2 { font-size: clamp(26px, 7vw, 36px); }
+  
+  .value-grid { grid-template-columns: 1fr; gap: 20px; }
+  .services-grid { grid-template-columns: 1fr; }
+  .targets-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .target-card { aspect-ratio: 4 / 5; }
+  
+  .demo-section { padding: 80px 0; }
+  .demo-frame { padding: 10px; }
+  
+  /* Section Site internet sur mobile : 1 colonne, plus compact */
+  .web-section { padding: 70px 0 60px; }
+  .web-hero { margin-bottom: 50px; }
+  .web-hero h2 { font-size: clamp(28px, 8vw, 38px); }
+  .web-hero-subtitle { font-size: 15px; }
+  
+  /* Mockup mobile : on cache le mockup phone qui flotte (trop encombrant), on garde le laptop */
+  .web-mockup { margin-bottom: 60px; padding: 0; }
+  
+  .web-values { grid-template-columns: 1fr; gap: 14px; margin-bottom: 70px; }
+  .web-value-card { padding: 28px 24px; }
+  .web-value-card h3 { font-size: 19px; }
+  
+  .web-includes-header,
+  .web-process-header { margin-bottom: 36px; }
+  .web-includes-header h3,
+  .web-process-header h3 { font-size: clamp(22px, 6.5vw, 30px); }
+  
+  .web-includes-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 70px; }
+  .web-include { padding: 22px 22px; }
+  
+  .web-process { grid-template-columns: 1fr; gap: 36px; margin-bottom: 60px; }
+  .web-process::before { display: none; }
+  
+  .web-cta-final { padding: 44px 24px; border-radius: 24px; }
+  .web-cta-final h3 { font-size: clamp(22px, 6vw, 28px); }
+  .web-cta-final p { font-size: 14px; }
+  
+  /* Section DOOH sur mobile */
+  .dooh-section { padding: 70px 0 60px; }
+  .dooh-hero { margin-bottom: 50px; }
+  .dooh-hero h2 { font-size: clamp(28px, 8vw, 38px); }
+  .dooh-hero-subtitle { font-size: 15px; }
+  
+  .dooh-mockup { margin-bottom: 60px; padding: 0; }
+  
+  .dooh-values { grid-template-columns: 1fr; gap: 14px; margin-bottom: 70px; }
+  .dooh-value-card { padding: 28px 24px; }
+  .dooh-value-card h3 { font-size: 19px; }
+  
+  .dooh-includes-header,
+  .dooh-process-header { margin-bottom: 36px; }
+  .dooh-includes-header h3,
+  .dooh-process-header h3 { font-size: clamp(22px, 6.5vw, 30px); }
+  
+  .dooh-includes-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 70px; }
+  .dooh-include { padding: 22px 22px; }
+  
+  .dooh-process { grid-template-columns: 1fr; gap: 36px; margin-bottom: 60px; }
+  .dooh-process::before { display: none; }
+  
+  .dooh-cta-final { padding: 44px 24px; border-radius: 24px; }
+  .dooh-cta-final h3 { font-size: clamp(22px, 6vw, 28px); }
+  .dooh-cta-final p { font-size: 14px; }
+  
+  .process-grid { grid-template-columns: 1fr; gap: 36px; }
+  .process-section { margin: 0 16px; padding: 60px 24px; border-radius: 28px; }
+  
+  .vitrine-content { padding: 48px 28px; }
+  .zone-card { padding: 36px 24px; }
+  
+  .contact-section { padding: 80px 0; border-radius: 28px 28px 0 0; }
+  .contact-form { padding: 28px 24px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 32px; }
+  .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+  .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .targets-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <img class="logo-icon" src="assets/logo.jpg" alt="FollowView3D" />
+      <span>FollowView<span style="color:var(--yellow)">3D</span></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#services">Services</a>
+      <a href="#demo">Démo</a>
+      <a href="#cibles">Cibles</a>
+      <a href="#process">Process</a>
+      <a href="#contact" class="nav-cta">Demander un devis</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO PRINCIPAL COMPACT ===== -->
+<section class="hero-main">
+  <div class="hero-media">
+    <img src="assets/hero-main.png" alt="FollowView3D — Expériences digitales immersives à 360°" class="hero-main-image" />
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-inner">
+      <span class="hero-eyebrow">FollowView3D</span>
+      <h1>
+        Transformez votre établissement<br>en <span class="accent">expérience digitale immersive.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Visites virtuelles 3D, sites vitrines intégrés et écrans dynamiques pour valoriser vos espaces et convertir vos visiteurs.
+      </p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary">
+          Demander un devis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#expertises" class="btn btn-secondary">
+          Voir les solutions
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Découvrir</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3 EXPERTISES ===== -->
+<section class="expertises-section" id="expertises">
+  <div class="container">
+    <div class="expertises-header fade-in">
+      <span class="section-eyebrow">Nos expertises</span>
+      <h2>3 solutions complémentaires pour votre établissement.</h2>
+    </div>
+
+    <div class="expertises-grid">
+
+      <!-- CARTE PRINCIPALE : VISITE 3D (plus grande, plus mise en avant) -->
+      <article class="expertise-card expertise-featured fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="assets/visite3d-card.mp4" type="video/mp4">
+          </video>
+          <img src="assets/hero.png" alt="" class="expertise-fallback" />
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">01</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Visite 3D</span>
+          <h3>Votre établissement, visitable à 360°.</h3>
+          <p>Offrez à vos clients une exploration immersive de vos espaces, directement depuis votre site ou Google Maps.</p>
+          <a href="#demo" class="expertise-cta">
+            <span>Découvrir</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- CARTE SECONDAIRE : SITE INTERNET -->
+      <article class="expertise-card expertise-secondary fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="assets/hero-web.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">02</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Site internet</span>
+          <h3>Un site conçu autour de votre visite 3D.</h3>
+          <p>Présentez votre établissement avec un site moderne, premium et pensé pour convertir.</p>
+          <a href="#site-internet" class="expertise-cta">
+            <span>Voir l'offre</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- CARTE SECONDAIRE : DOOH -->
+      <article class="expertise-card expertise-secondary fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="assets/hero-dooh.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">03</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Écrans dynamiques</span>
+          <h3>Vos écrans deviennent une vitrine digitale.</h3>
+          <p>Diffusez vos contenus, visites et messages sur des écrans professionnels en point de vente.</p>
+          <a href="#dooh" class="expertise-cta">
+            <span>Explorer</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION DEMO ===== -->
+<section class="demo-section" id="demo">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow">Démo immersive</span>
+      <h2>Comme si vous y étiez.</h2>
+    </div>
+    <div class="demo-frame fade-in">
+      <div class="demo-iframe-container">
+        <iframe
+          src="https://my.matterport.com/show/?m=phCH7aCWGPR&play=1"
+          frameborder="0"
+          allowfullscreen
+          allow="xr-spatial-tracking; fullscreen; accelerometer; gyroscope; magnetometer"
+          loading="lazy"
+          title="Visite virtuelle FollowView3D"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION SITE INTERNET (service dédié) ===== -->
+<section class="web-section" id="site-internet">
+  <div class="web-bg-decor"></div>
+
+  <!-- Sous-section 1 : Hero du service -->
+  <div class="container">
+    <div class="web-hero fade-in">
+      <span class="section-eyebrow">Site internet</span>
+      <h2>Un site conçu autour de <span class="web-accent">votre visite 3D.</span></h2>
+      <p class="web-hero-subtitle">
+        Un site moderne, premium et pensé pour convertir — qui intègre nativement votre visite virtuelle. Ce que personne d'autre ne propose.
+      </p>
+    </div>
+
+    <!-- Sous-section 2 : Mockup laptop + mobile (image fournie) -->
+    <div class="web-mockup fade-in">
+      <img src="assets/web-mockup.png" alt="Aperçu d'un site FollowView3D sur ordinateur et mobile — Hôtel Rivage" class="web-mockup-image" />
+    </div>
+
+    <!-- Sous-section 3 : Pourquoi un site avec FollowView3D — 3 cartes valeur -->
+    <div class="web-values">
+      <div class="web-value-card fade-in">
+        <div class="web-value-num">01</div>
+        <h3>Différenciez-vous</h3>
+        <p>Visite 3D intégrée nativement dans votre site — un atout unique que vos concurrents n'ont pas.</p>
+      </div>
+      <div class="web-value-card fade-in">
+        <div class="web-value-num">02</div>
+        <h3>Convertissez</h3>
+        <p>Un design pensé pour transformer vos visiteurs curieux en clients qui passent à l'action.</p>
+      </div>
+      <div class="web-value-card fade-in">
+        <div class="web-value-num">03</div>
+        <h3>Sereinement</h3>
+        <p>Design, développement, hébergement, support — vous vous concentrez sur votre métier.</p>
+      </div>
+    </div>
+
+    <!-- Sous-section 4 : Ce qu'on inclut -->
+    <div class="web-includes-header fade-in">
+      <span class="section-eyebrow">Ce qu'on inclut</span>
+      <h3>Tout pour démarrer fort.</h3>
+    </div>
+    <div class="web-includes-grid">
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="18" height="14" rx="2"/><path d="M2 17l4-4 3 3 5-5 6 6"/><circle cx="7" cy="8" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <h4>Site sur-mesure</h4>
+      </div>
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><circle cx="11" cy="11" r="3"/><path d="M11 3v2M11 17v2M3 11h2M17 11h2"/></svg>
+        </div>
+        <h4>Visite 3D intégrée</h4>
+      </div>
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="10" height="18" rx="2"/><rect x="13" y="6" width="6" height="14" rx="1"/></svg>
+        </div>
+        <h4>Responsive mobile</h4>
+      </div>
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M15 15l5 5"/></svg>
+        </div>
+        <h4>SEO optimisé</h4>
+      </div>
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l8-8 8 8M5 9v10h12V9"/><rect x="9" y="13" width="4" height="6"/></svg>
+        </div>
+        <h4>Hébergement inclus</h4>
+      </div>
+      <div class="web-include fade-in">
+        <div class="web-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M11 6v5l3 2"/></svg>
+        </div>
+        <h4>Support réactif</h4>
+      </div>
+    </div>
+
+    <!-- Sous-section 5 : Process en 4 étapes -->
+    <div class="web-process-header fade-in">
+      <span class="section-eyebrow">Notre méthode</span>
+      <h3>De l'idée au site en ligne.</h3>
+    </div>
+    <div class="web-process">
+      <div class="web-step fade-in">
+        <div class="web-step-num">01</div>
+        <h4>Brief & cahier des charges</h4>
+        <p>Échange initial, repérage de votre établissement, devis sous 48h.</p>
+      </div>
+      <div class="web-step fade-in">
+        <div class="web-step-num">02</div>
+        <h4>Maquette validée</h4>
+        <p>Design sur-mesure que vous validez avant tout développement.</p>
+      </div>
+      <div class="web-step fade-in">
+        <div class="web-step-num">03</div>
+        <h4>Développement & 3D</h4>
+        <p>Intégration native de votre visite virtuelle au cœur du site.</p>
+      </div>
+      <div class="web-step fade-in">
+        <div class="web-step-num">04</div>
+        <h4>Mise en ligne & formation</h4>
+        <p>Déploiement, formation à la gestion, suivi sur 30 jours.</p>
+      </div>
+    </div>
+
+    <!-- Sous-section 6 : CTA final -->
+    <div class="web-cta-final fade-in">
+      <h3>Prêt à valoriser votre établissement en ligne ?</h3>
+      <p>Devis personnalisé sous 48h, sans engagement.</p>
+      <a href="#contact" class="btn btn-primary">
+        Demander un devis
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION DOOH (Écrans dynamiques — service dédié) ===== -->
+<section class="dooh-section" id="dooh">
+  <div class="dooh-bg-decor"></div>
+
+  <!-- Sous-section 1 : Hero du service -->
+  <div class="container">
+    <div class="dooh-hero fade-in">
+      <span class="section-eyebrow">Écrans dynamiques</span>
+      <h2>Vos écrans, <span class="dooh-accent">votre vitrine digitale.</span></h2>
+      <p class="dooh-hero-subtitle">
+        Diffusez vos contenus, visites virtuelles et messages sur des écrans professionnels installés dans vos points de vente. <strong>4× plus d'attention</strong> qu'une affiche statique, <strong>47%</strong> d'interaction client.
+      </p>
+    </div>
+
+    <!-- Sous-section 2 : Mockup totem (image fournie) -->
+    <div class="dooh-mockup fade-in">
+      <img src="assets/dooh-mockup.png" alt="Totem digital FollowView3D dans une boutique premium" class="dooh-mockup-image" />
+    </div>
+
+    <!-- Sous-section 3 : Pourquoi le DOOH avec FollowView3D — 3 cartes valeur -->
+    <div class="dooh-values">
+      <div class="dooh-value-card fade-in">
+        <div class="dooh-value-num">01</div>
+        <h3>Captez l'attention</h3>
+        <p>Un écran dynamique attire 4× plus de regards qu'une affiche statique. Vos clients vous voient, vraiment.</p>
+      </div>
+      <div class="dooh-value-card fade-in">
+        <div class="dooh-value-num">02</div>
+        <h3>Diffusez sur-mesure</h3>
+        <p>Vos visites 3D, vos vidéos, vos promos — vous pilotez tout depuis un dashboard simple à utiliser.</p>
+      </div>
+      <div class="dooh-value-card fade-in">
+        <div class="dooh-value-num">03</div>
+        <h3>Solution clé en main</h3>
+        <p>Écran fourni, installé, configuré et maintenu par FollowView3D. Vous n'avez rien à gérer.</p>
+      </div>
+    </div>
+
+    <!-- Sous-section 4 : Ce qu'on inclut -->
+    <div class="dooh-includes-header fade-in">
+      <span class="section-eyebrow">Ce qu'on inclut</span>
+      <h3>Tout pour démarrer fort.</h3>
+    </div>
+    <div class="dooh-includes-grid">
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="18" height="13" rx="2"/><path d="M8 20h6M11 16v4"/></svg>
+        </div>
+        <h4>Écran professionnel 4K</h4>
+      </div>
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14l-2-7H7zM6 12v8h12v-8M9 16h4"/></svg>
+        </div>
+        <h4>Installation sur site</h4>
+      </div>
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="3"/><path d="M11 1v3M11 18v3M21 11h-3M4 11H1M17.7 4.3l-2.1 2.1M6.4 15.6l-2.1 2.1M17.7 17.7l-2.1-2.1M6.4 6.4L4.3 4.3"/></svg>
+        </div>
+        <h4>Configuration & paramétrage</h4>
+      </div>
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="18" height="14" rx="2"/><path d="M2 8h18M6 12h4M6 14h6"/></svg>
+        </div>
+        <h4>CMS de pilotage</h4>
+      </div>
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="9"/><path d="M11 6v5l3 2"/></svg>
+        </div>
+        <h4>Diffusion 24/7</h4>
+      </div>
+      <div class="dooh-include fade-in">
+        <div class="dooh-include-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l4-4 3 3 7-7M21 7v6h-6"/><path d="M3 17h18"/></svg>
+        </div>
+        <h4>Maintenance & support</h4>
+      </div>
+    </div>
+
+    <!-- Sous-section 5 : Process en 4 étapes -->
+    <div class="dooh-process-header fade-in">
+      <span class="section-eyebrow">Notre méthode</span>
+      <h3>De l'audit au déploiement.</h3>
+    </div>
+    <div class="dooh-process">
+      <div class="dooh-step fade-in">
+        <div class="dooh-step-num">01</div>
+        <h4>Audit du lieu</h4>
+        <p>Luminosité, emplacement, public cible : on étudie votre point de vente.</p>
+      </div>
+      <div class="dooh-step fade-in">
+        <div class="dooh-step-num">02</div>
+        <h4>Sélection du matériel</h4>
+        <p>Écran adapté à vos besoins : taille, luminosité, format, fixation.</p>
+      </div>
+      <div class="dooh-step fade-in">
+        <div class="dooh-step-num">03</div>
+        <h4>Installation & paramétrage</h4>
+        <p>Pose sur site, configuration du CMS, mise en route des contenus.</p>
+      </div>
+      <div class="dooh-step fade-in">
+        <div class="dooh-step-num">04</div>
+        <h4>Formation & suivi</h4>
+        <p>On vous forme à piloter vos diffusions, et on assure la maintenance.</p>
+      </div>
+    </div>
+
+    <!-- Sous-section 6 : CTA final -->
+    <div class="dooh-cta-final fade-in">
+      <h3>Prêt à équiper votre point de vente ?</h3>
+      <p>Audit gratuit, devis personnalisé sous 48h.</p>
+      <a href="#contact" class="btn btn-primary">
+        Demander un devis
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION TARGETS ===== -->
+<section class="targets-section" id="cibles">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow">Pour qui</span>
+      <h2>Pensé pour vous démarquer.</h2>
+    </div>
+    <div class="targets-grid">
+      <div class="target-card fade-in">
+        <div class="target-image target-1"></div>
+        <div class="target-overlay"><h3>Hôtels</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-2"></div>
+        <div class="target-overlay"><h3>Restaurants</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-3"></div>
+        <div class="target-overlay"><h3>Salons de coiffure</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-4"></div>
+        <div class="target-overlay"><h3>Barber shops</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-5"></div>
+        <div class="target-overlay"><h3>Showrooms</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-6"></div>
+        <div class="target-overlay"><h3>Commerces premium</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-7"></div>
+        <div class="target-overlay"><h3>Agences immobilières</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-8"></div>
+        <div class="target-overlay"><h3>Espaces professionnels</h3></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION VALUE ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow">Pourquoi la 3D</span>
+      <h2>Voir avant de réserver.</h2>
+    </div>
+    <div class="value-grid">
+      <div class="value-card fade-in">
+        <div class="value-icon">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 23s-9-5-9-13a9 9 0 0 1 18 0c0 8-9 13-9 13z"/><circle cx="13" cy="10" r="3"/></svg>
+        </div>
+        <h3>Rassurer</h3>
+        <p>Vos clients savent ce qu'ils vont trouver.</p>
+      </div>
+      <div class="value-card fade-in">
+        <div class="value-icon">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L16 9L23 9.5L18 14L19.5 21L13 17.5L6.5 21L8 14L3 9.5L10 9L13 2Z"/></svg>
+        </div>
+        <h3>Valoriser</h3>
+        <p>Une présentation premium de votre lieu.</p>
+      </div>
+      <div class="value-card fade-in">
+        <div class="value-icon">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg>
+        </div>
+        <h3>Convertir</h3>
+        <p>Jusqu'à +47% de réservations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION SERVICES ===== -->
+<section class="services-section section" id="services">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow">Services</span>
+      <h2>Tout pour valoriser vos espaces.</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><circle cx="11" cy="11" r="3"/></svg></div>
+        <h3>Visite virtuelle 3D / 360°</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="16" height="16" rx="2"/><path d="M3 9h16M9 3v16"/></svg></div>
+        <h3>Scan Matterport</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h3l2-3h8l2 3h3v12H2V7z"/><circle cx="11" cy="13" r="4"/></svg></div>
+        <h3>Photographie pro</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 2C7 2 4 5 4 9c0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z"/><circle cx="11" cy="9" r="2.5"/></svg></div>
+        <h3>Google Maps & Street View</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h16v12H3z"/><path d="M3 7h16M7 19h8M11 15v4"/></svg></div>
+        <h3>Intégration web</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h16v16H3z"/><path d="M3 8h16M8 3v16"/><circle cx="14" cy="13" r="2"/></svg></div>
+        <h3>Site vitrine 3D</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="16" height="16"/><path d="M3 11h16M11 3v16"/></svg></div>
+        <h3>Plans 2D</h3>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 3L3 8v8l8 5 8-5V8l-8-5z"/><path d="M3 8l8 5 8-5M11 13v8"/></svg></div>
+        <h3>Maquettes 3D</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION PROCESS ===== -->
+<section class="process-section section" id="process">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow">Process</span>
+      <h2>Du scan à la mise en ligne.</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step fade-in">
+        <div class="step-number">1</div>
+        <h3>Échange</h3>
+        <p>Brief & devis sous 48h.</p>
+      </div>
+      <div class="process-step fade-in">
+        <div class="step-number">2</div>
+        <h3>Prise de vue</h3>
+        <p>Captation 3D Matterport sur site.</p>
+      </div>
+      <div class="process-step fade-in">
+        <div class="step-number">3</div>
+        <h3>Traitement</h3>
+        <p>Post-production & optimisation.</p>
+      </div>
+      <div class="process-step fade-in">
+        <div class="step-number">4</div>
+        <h3>Mise en ligne</h3>
+        <p>Site, Google Maps, supports digitaux.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION SITE VITRINE ===== -->
+<section class="vitrine-section">
+  <div class="container">
+    <div class="vitrine-content fade-in">
+      <div class="vitrine-text">
+        <span class="section-eyebrow" style="color: var(--black);">Solution clé en main</span>
+        <h2 style="margin-top: 14px;">Un site vitrine, votre visite au cœur.</h2>
+        <p>Solution clé en main pour mettre en scène votre établissement.</p>
+        <a href="#contact" class="btn btn-dark">
+          Créer mon site avec visite 3D
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="vitrine-mockup">
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-line short"></div>
+            <div class="mockup-line medium"></div>
+            <div class="mockup-block"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION ZONE ===== -->
+<section class="zone-section">
+  <div class="container">
+    <div class="zone-card fade-in">
+      <div class="zone-text">
+        <span class="section-eyebrow">Zone d'intervention</span>
+        <h2 style="margin-top: 14px;">Paris, Île-de-France, toute la France.</h2>
+        <p>Studio mobile pour tous types d'établissements.</p>
+        <div class="zone-info">
+          <div class="zone-info-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 1C6 1 3 4 3 8c0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z"/><circle cx="10" cy="8" r="2.5"/></svg>
+          </div>
+          <div class="zone-info-text">
+            <strong>Studio Paris</strong>
+            <span>10 rue de la Félicité, 75017 Paris</span>
+          </div>
+        </div>
+      </div>
+      <div class="zone-map">
+        <img src="assets/france-map.png" alt="Carte de France — FollowView3D intervient à Paris, en Île-de-France et partout en France" class="france-map-img" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION CONTACT ===== -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info fade-in">
+        <span class="section-eyebrow">Contact</span>
+        <h2 style="margin-top: 14px;">Parlons de votre projet.</h2>
+        <p>Devis personnalisé sous 48h.</p>
+        <ul class="contact-list">
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 1C5 1 2 4 2 7c0 5 7 10 7 10s7-5 7-10c0-3-3-6-7-6z"/><circle cx="9" cy="7" r="2.5"/></svg>
+            </div>
+            <span>10 rue de la Félicité, 75017 Paris</span>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4l7 5 7-5M2 4v10h14V4H2z"/></svg>
+            </div>
+            <a href="mailto:marc.houri@followview3d.fr" style="color:inherit; transition:color 0.2s;" onmouseover="this.style.color='var(--graphite)'" onmouseout="this.style.color='inherit'">marc.houri@followview3d.fr</a>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 13v3a1 1 0 01-1 1c-7 0-13-6-13-13a1 1 0 011-1h3l1 4-2 1c1 3 3 5 6 6l1-2 4 1z"/></svg>
+            </div>
+            <a href="tel:+33663061024" style="color:inherit; transition:color 0.2s;" onmouseover="this.style.color='var(--graphite)'" onmouseout="this.style.color='inherit'">+33 6 63 06 10 24</a>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="9" r="7"/><path d="M5 9l3 3 5-6"/></svg>
+            </div>
+            <span>Réponse sous 48h ouvrées</span>
+          </li>
+        </ul>
+      </div>
+      <form class="contact-form fade-in" id="quoteForm" onsubmit="event.preventDefault(); alert('Demande envoyée — nous vous recontactons sous 48h.');">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+          </div>
+          <div class="form-group">
+            <label for="etablissement">Établissement *</label>
+            <input type="text" id="etablissement" name="etablissement" placeholder="Nom de l'établissement" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78">
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="vous@email.fr" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ville">Ville *</label>
+            <input type="text" id="ville" name="ville" placeholder="Paris" required>
+          </div>
+          <div class="form-group">
+            <label for="projet">Type de projet *</label>
+            <select id="projet" name="projet" required>
+              <option value="">Sélectionner</option>
+              <option value="hotel">Hôtel</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="salon">Salon / Barber</option>
+              <option value="showroom">Showroom</option>
+              <option value="commerce">Commerce</option>
+              <option value="immobilier">Agence immobilière</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Décrivez votre projet, la surface approximative, vos délais..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          Demander un devis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img class="logo-icon" src="assets/logo.jpg" alt="FollowView3D" />
+          <span>FollowView<span style="color:var(--yellow)">3D</span></span>
+        </a>
+        <p>Visites virtuelles 3D & 360° pour hôtels, commerces, restaurants et espaces professionnels. Basé à Paris, disponible partout en France.</p>
+        <div class="footer-socials">
+          <a href="https://instagram.com/followview_3d" target="_blank" rel="noopener" class="social-link" aria-label="Instagram @followview_3d">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="14" height="14" rx="4"/><circle cx="9" cy="9" r="3.5"/><circle cx="13" cy="5" r="0.8" fill="currentColor"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/follow-view-3d-591728384" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn FollowView3D">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6" r="1"/><rect x="5" y="8" width="1.2" height="5"/><path d="M9 13V8h1.2v.8c.3-.5 1-1 2-1 1.5 0 2.3 1 2.3 2.5V13h-1.2v-2.5c0-.8-.3-1.3-1-1.3s-1.1.5-1.1 1.3V13H9z" stroke-width="0.5"/></svg>
+          </a>
+          <a href="https://m.facebook.com/profile.php?id=61580598463575" target="_blank" rel="noopener" class="social-link" aria-label="Facebook FollowView3D">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M16 9a7 7 0 10-8.1 6.9V11h-1.8V9h1.8V7.5c0-1.8 1.07-2.78 2.7-2.78.78 0 1.6.14 1.6.14v1.76h-.9c-.89 0-1.17.55-1.17 1.12V9h2l-.32 2H10.1v4.9A7 7 0 0016 9z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Visite virtuelle 3D</a></li>
+          <li><a href="#services">Scan Matterport</a></li>
+          <li><a href="#services">Photographie pro</a></li>
+          <li><a href="#services">Site vitrine 3D</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Entreprise</h4>
+        <ul>
+          <li><a href="#cibles">Cibles</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#demo">Démo</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Zone</h4>
+        <ul>
+          <li><a href="#">Paris</a></li>
+          <li><a href="#">Île-de-France</a></li>
+          <li><a href="#">Toute la France</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 FollowView3D · 10 rue de la Félicité, 75017 Paris</span>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">CGV</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile menu toggle
+const toggle = document.getElementById('menuToggle');
+const links = document.getElementById('navLinks');
+toggle.addEventListener('click', () => {
+  links.classList.toggle('mobile-open');
+});
+links.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => links.classList.remove('mobile-open'));
+});
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), index * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Nav : transition transparente → opaque après le hero principal
+const nav = document.querySelector('.nav');
+const heroMain = document.querySelector('.hero-main');
+const updateNav = () => {
+  const threshold = heroMain ? heroMain.offsetHeight * 0.85 : 100;
+  if (window.scrollY > threshold) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+};
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// Lecture automatique en boucle pour TOUTES les vidéos (hero principal + 3 cartes expertises)
+const allVideos = document.querySelectorAll('.hero-media video, .expertise-media video');
+allVideos.forEach(video => {
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.autoplay = true;
+
+  const tryPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay bloqué : on force la lecture à la première interaction utilisateur
+        const forcePlay = () => {
+          allVideos.forEach(v => v.play().catch(() => {}));
+          ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+            document.removeEventListener(evt, forcePlay)
+          );
+        };
+        ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+          document.addEventListener(evt, forcePlay, { once: true, passive: true })
+        );
+      });
+    }
+  };
+
+  tryPlay();
+  video.addEventListener('canplay', tryPlay, { once: true });
+});
+
+// Reprise auto quand l'onglet redevient visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    allVideos.forEach(v => {
+      if (v.paused) v.play().catch(() => {});
+    });
+  }
+});
+</script>
+
+</body>
+</html>

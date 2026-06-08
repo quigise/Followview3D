@@ -3523,7 +3523,7 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 15px 35px -10px rgba(232, 172, 55, 0.6);
 }
 
-/* V63 : Honeypot Netlify Forms — invisible pour les humains, piégeage des bots */
+/* Honeypot anti-spam — invisible pour les humains, piégeage des bots */
 .form-honeypot {
   position: absolute !important;
   left: -10000px !important;
@@ -5282,24 +5282,21 @@ img { max-width: 100%; display: block; }
           </li>
         </ul>
       </div>
-      <!-- Formulaire de demande de devis envoyé via Netlify Forms (V63)
-           name="quote-request" : nom du formulaire dans le dashboard Netlify > Forms
-           data-netlify="true" : active la collection automatique des soumissions
-           netlify-honeypot="bot-field" : champ caché anti-spam (doit rester vide pour les humains)
-           Configuration côté Netlify (à faire 1 fois) :
-             1. Déployer le site sur Netlify (le formulaire est détecté automatiquement au build)
-             2. Aller dans Site > Forms > quote-request > Settings & Notifications
-             3. Ajouter "Email notification" avec destinataire = contact@followview3d.fr -->
+      <!-- Formulaire de demande de devis envoyé via Web3Forms (compatible Vercel)
+           Configuration (à faire 1 fois) :
+             1. Aller sur https://web3forms.com, saisir l'email destinataire des demandes
+                (ex. contact@followview3d.fr) pour recevoir une clé d'accès gratuite par email.
+             2. Coller cette clé dans l'attribut value de l'input "access_key" ci-dessous.
+             Les soumissions arrivent alors directement dans cette boîte mail. -->
       <form
         class="contact-form fade-in"
         id="quoteForm"
-        name="quote-request"
         method="POST"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        action="/?form=success">
-        <!-- Champ caché requis par Netlify pour identifier le formulaire (AJAX et fallback) -->
-        <input type="hidden" name="form-name" value="quote-request">
+        action="https://api.web3forms.com/submit">
+        <!-- Clé d'accès Web3Forms (publique par conception, gérée sur web3forms.com) -->
+        <input type="hidden" name="access_key" value="53b89af5-c794-44b8-abea-f1500ff1de76">
+        <input type="hidden" name="subject" value="Nouvelle demande de devis — FollowView 3D">
+        <input type="hidden" name="from_name" value="Site FollowView 3D">
         <!-- Honeypot anti-spam : invisible pour les humains, les bots le remplissent et sont bloqués -->
         <p class="form-honeypot" aria-hidden="true">
           <label>Ne pas remplir ce champ : <input name="bot-field" tabindex="-1" autocomplete="off"></label>
@@ -5985,7 +5982,7 @@ document.querySelectorAll('[data-preselect-service]').forEach(link => {
   });
 })();
 
-// ===== V63 : Soumission AJAX du formulaire de devis (Netlify Forms) =====
+// ===== Soumission AJAX du formulaire de devis (Web3Forms) =====
 // Évite le rechargement de page brut : envoie en fetch POST et affiche un feedback in-place.
 // Si Netlify n'est pas disponible (ex: dev local), bascule sur un fallback qui simule l'envoi.
 (function quoteFormHandler() {
@@ -6035,26 +6032,22 @@ document.querySelectorAll('[data-preselect-service]').forEach(link => {
     if (submitLabel) submitLabel.textContent = 'Envoi en cours...';
     hideFeedback();
 
-    // Préparation du payload pour Netlify Forms (format url-encoded requis)
+    // Envoi vers Web3Forms (compatible Vercel et tout hébergeur statique)
     const formData = new FormData(form);
-    const params = new URLSearchParams();
-    for (const [key, value] of formData.entries()) {
-      params.append(key, value);
-    }
 
     try {
-      const response = await fetch('/', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString(),
+        headers: { 'Accept': 'application/json' },
+        body: formData,
       });
+      const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.success) {
         showFeedback('Demande envoyée — nous vous recontactons sous 48h.');
         form.reset();
       } else {
-        // Code HTTP non-2xx : Netlify a refusé la soumission
-        throw new Error('HTTP ' + response.status);
+        throw new Error(data.message || ('HTTP ' + response.status));
       }
     } catch (err) {
       // En dev local (pas de Netlify), fetch / vers le serveur de dev échoue souvent.

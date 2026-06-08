@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Forms — Netlify static declaration</title>
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+<!--
+  V89 : Fichier de pré-déclaration des formulaires pour Netlify Forms.
+  
+  Pourquoi ce fichier ?
+  Netlify détecte les formulaires AU MOMENT DU BUILD en parsant les fichiers HTML statiques.
+  Quand un formulaire est soumis en AJAX (fetch POST), ou si le site est une SPA,
+  ou simplement si la détection automatique a échoué pour une raison technique,
+  ce fichier sert de "déclaration explicite" qui force Netlify à enregistrer le form.
+  
+  Ce fichier n'est jamais visible par les visiteurs (meta noindex + URL non liée).
+  Il sert UNIQUEMENT au moteur de détection de Netlify lors du déploiement.
+  
+  Le contenu doit reproduire EXACTEMENT la même structure de form que dans index.html
+  (mêmes name, mêmes champs).
+-->
+
+<form name="quote-request" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="quote-request">
+  <input type="text" name="bot-field">
+  <select name="service">
+    <option value="visite-3d">Visite virtuelle 3D / 360°</option>
+    <option value="site-internet">Site internet</option>
+    <option value="ecrans-dooh">Écrans dynamiques (DOOH)</option>
+    <option value="plusieurs">Plusieurs services</option>
+    <option value="conseil">Je ne sais pas encore — conseillez-moi</option>
+  </select>
+  <input type="text" name="nom">
+  <input type="text" name="etablissement">
+  <input type="tel" name="telephone">
+  <input type="email" name="email">
+  <input type="text" name="ville">
+  <select name="projet">
+    <option value="hotel">Hôtel</option>
+    <option value="restaurant">Restaurant</option>
+    <option value="sante">Établissement de santé</option>
+    <option value="showroom">Showroom</option>
+    <option value="commerce">Commerce</option>
+    <option value="immobilier">Agence immobilière</option>
+    <option value="bureau">Espace professionnel</option>
+    <option value="autre">Autre</option>
+  </select>
+  <textarea name="message"></textarea>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,6093 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FollowView3D — Visites virtuelles 3D & 360° pour professionnels</title>
+<meta name="description" content="FollowView3D crée des visites virtuelles immersives pour hôtels, commerces, salons, restaurants et espaces professionnels. Basé à Paris, partout en France.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  /* Palette FollowView3D — version graphite luxe */
+  --cream: #F3F0E7;            /* fond crème principal */
+  --cream-light: #F8F5EC;      /* variante éclaircie */
+  --white: #FFFFFF;
+  
+  /* Couleur signature : graphite profond */
+  --graphite: #2E3336;         /* couleur signature : titres, accents, soulignements */
+  --graphite-deep: #1A1D1C;    /* version plus foncée pour les contrastes forts */
+  --graphite-soft: #4A5054;    /* version douce pour textes secondaires */
+  
+  /* Jaune signature : aligné sur la teinte exacte du logo FollowView3D
+     V79 : passage de #F3C532 (jaune vif citronné) à #E8AC37 (doré chaud du logo)
+     pour cohérence chromatique parfaite entre logo et identité du site */
+  --yellow: #E8AC37;             /* jaune doré exact du logo FollowView3D */
+  --yellow-deep: #D59518;        /* hover : version 17% plus sombre, même chaleur */
+  
+  /* Gris fonctionnels */
+  --metal: #A0A6A4;            /* gris argenté du logo */
+  --metal-dark: #586062;       /* gris du texte FollowView */
+  --dark: #393D3C;             /* gris foncé chaud */
+  --black: #1A1D1C;            /* noir doux */
+  
+  /* Ombres et effets */
+  --shadow-soft: 0 10px 40px -10px rgba(57, 61, 60, 0.12);
+  --shadow-medium: 0 20px 60px -20px rgba(57, 61, 60, 0.18);
+  --shadow-graphite: 0 10px 30px -10px rgba(46, 51, 54, 0.35);
+  --shadow-yellow: 0 10px 30px -10px rgba(232, 172, 55, 0.45);
+  --radius: 20px;
+  --radius-lg: 28px;
+  --radius-sm: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Offset universel pour les ancres (la nav fixe ne masque plus les sections ni les divs ancrés) */
+section[id],
+[id] {
+  scroll-margin-top: 100px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  line-height: 1.6;
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  line-height: 1.15;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav.scrolled {
+  background: rgba(243, 240, 231, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom-color: rgba(160, 166, 164, 0.15);
+  box-shadow: 0 4px 20px rgba(57, 61, 60, 0.05);
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  /* V71 : min-height augmenté de 88 → 110px pour accommoder le logo agrandi sur le hero */
+  min-height: 110px;
+  transition: min-height 0.3s ease;
+}
+
+.nav.scrolled .nav-inner {
+  min-height: 78px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  transition: color 0.4s ease;
+}
+
+/* Glassmorphism premium UNIQUEMENT pour la nav, pas le footer */
+.nav .logo {
+  padding: 8px 14px 8px 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+.nav.scrolled .logo {
+  color: var(--graphite);
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+}
+
+/* Logo agrandi UNIQUEMENT dans la nav, pas dans le footer */
+.nav .logo-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.nav.scrolled .logo-icon {
+  width: 56px;
+  height: 56px;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* ===== Logo complet (V70 : image incluant icône + texte "FollowView 3D" intégré)
+   Ratio image source : 1365×600 (≈ 2.275:1)
+   Le logo a un fond transparent, les éléments sont gris-bleu + jaune.
+   On dimensionne en hauteur, la largeur suit naturellement. ===== */
+.logo-full {
+  /* Annule le gap car il n'y a plus de texte HTML séparé à droite */
+  gap: 0;
+}
+
+.logo-full img {
+  height: 56px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  transition: height 0.4s ease;
+}
+
+/* Sur le hero (nav non scrolled), le fond est sombre → logo dans un cadre blanc cohérent
+   V71 : taille agrandie pour donner de la présence à l'arrivée sur le hero */
+.nav .logo-full {
+  padding: 10px 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.20);
+}
+
+.nav .logo-full img {
+  height: 80px;
+}
+
+/* Après scroll, la nav devient claire → on retire le cadre, le logo respire */
+.nav.scrolled .logo-full {
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.nav.scrolled .logo-full img {
+  height: 44px;
+}
+
+/* Footer : fond sombre/cream selon le thème, pas de cadre blanc */
+.footer-brand .logo-full img {
+  height: 56px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(243, 240, 231, 0.85);
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav.scrolled .nav-links a {
+  color: var(--dark);
+}
+
+.nav-links a:hover { color: var(--yellow); }
+.nav.scrolled .nav-links a:hover { color: var(--graphite); }
+
+.nav-cta {
+  background: var(--yellow);
+  color: var(--graphite-deep) !important;
+  padding: 11px 22px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 14px rgba(232, 172, 55, 0.3);
+}
+
+.nav-cta:hover {
+  background: #FFD250;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(232, 172, 55, 0.5);
+}
+
+.nav.scrolled .nav-cta {
+  background: var(--graphite);
+  color: var(--cream) !important;
+  box-shadow: none;
+}
+
+.nav.scrolled .nav-cta:hover {
+  background: var(--yellow);
+  color: var(--graphite-deep) !important;
+}
+
+/* ===== V88 : Dropdown menu nav (Démo + Étapes)
+   Au hover/focus, le panneau s'ouvre pour proposer 3 options de navigation
+   correspondant aux 3 grandes sections du site ===== */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(243, 240, 231, 0.85);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav-dropdown-trigger svg {
+  transition: transform 0.3s ease;
+  opacity: 0.7;
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown[data-open="true"] .nav-dropdown-trigger {
+  color: var(--yellow);
+}
+
+.nav-dropdown[data-open="true"] .nav-dropdown-trigger svg {
+  transform: rotate(180deg);
+}
+
+.nav.scrolled .nav-dropdown-trigger {
+  color: var(--dark);
+}
+
+.nav.scrolled .nav-dropdown-trigger:hover,
+.nav.scrolled .nav-dropdown[data-open="true"] .nav-dropdown-trigger {
+  color: var(--graphite);
+}
+
+/* Panneau du dropdown */
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  min-width: 280px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(46, 51, 54, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px -20px rgba(26, 29, 28, 0.35), 0 8px 20px -8px rgba(26, 29, 28, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  z-index: 110;
+}
+
+/* Petit triangle pointeur en haut du dropdown vers le bouton */
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid rgba(46, 51, 54, 0.08);
+  border-left: 1px solid rgba(46, 51, 54, 0.08);
+}
+
+/* Zone tampon invisible pour éviter que le hover ne soit cassé entre le bouton et le menu */
+.nav-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 14px;
+  pointer-events: none;
+}
+
+.nav-dropdown:hover::after,
+.nav-dropdown[data-open="true"]::after {
+  pointer-events: auto;
+}
+
+/* Affichage du menu : au hover du conteneur (desktop) ou via état data-open (mobile) */
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown[data-open="true"] .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Items du menu */
+.nav-dropdown-menu a {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--graphite-deep) !important;
+  transition: background 0.2s ease;
+}
+
+.nav-dropdown-menu a + a {
+  margin-top: 2px;
+}
+
+.nav-dropdown-menu a:hover {
+  background: rgba(232, 172, 55, 0.10);
+  color: var(--graphite-deep) !important;
+}
+
+.nav-dropdown-num {
+  grid-row: 1 / 3;
+  align-self: center;
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  /* V92 : fond jaune signature plein + texte graphite-deep pour contraste optimal
+     (cohérent avec les autres badges jaunes du site : .value-icon, .zone-info-icon, .float-card-icon) */
+  color: var(--graphite-deep);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+  box-shadow: 0 4px 10px -3px rgba(232, 172, 55, 0.45);
+}
+
+.nav-dropdown-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--graphite-deep);
+  letter-spacing: -0.005em;
+}
+
+.nav-dropdown-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--graphite-soft);
+  line-height: 1.3;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--cream);
+  transition: all 0.3s;
+}
+.nav.scrolled .menu-toggle span {
+  background: var(--graphite);
+}
+
+/* ===== HERO PRINCIPAL COMPACT ===== */
+.hero-main {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--graphite-deep);
+  color: var(--cream);
+  isolation: isolate;
+  padding: 120px 0 80px;
+}
+
+.hero-main .hero-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-main .hero-media video,
+.hero-main .hero-media img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+}
+
+.hero-main .hero-media video { z-index: 1; }
+.hero-main .hero-media img { z-index: 0; }
+
+/* Image principale du hero : Ken Burns subtil pour donner du mouvement */
+.hero-main .hero-main-image {
+  animation: kenBurnsHero 22s ease-in-out infinite alternate;
+}
+
+@keyframes kenBurnsHero {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes kenBurns {
+  0% { transform: translate(-50%, -50%) scale(1.02); }
+  100% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+.hero-main .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    /* Voile sombre à gauche pour le titre, transparent à droite pour préserver le logo et le building */
+    linear-gradient(90deg, rgba(17, 17, 17, 0.72) 0%, rgba(17, 17, 17, 0.45) 35%, rgba(17, 17, 17, 0.15) 60%, rgba(17, 17, 17, 0.0) 80%),
+    /* Léger voile haut + bas pour la nav et le scroll indicator */
+    linear-gradient(180deg, rgba(17, 17, 17, 0.35) 0%, transparent 18%, transparent 80%, rgba(17, 17, 17, 0.4) 100%);
+  pointer-events: none;
+}
+
+.hero-main .hero-overlay::before {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 50%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(232, 172, 55, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  filter: blur(60px);
+  z-index: -1;
+}
+
+.hero-main .hero-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.hero-main .hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.hero-main .hero-inner {
+  max-width: 880px;
+}
+
+.hero-main .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--cream);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+.hero-main .hero-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 10px rgba(232, 172, 55, 0.7);
+}
+
+.hero-main h1 {
+  font-size: clamp(28px, 3.8vw, 48px);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+}
+
+.hero-main h1 .accent {
+  color: var(--cream);
+  font-style: italic;
+  font-weight: 600;
+  opacity: 0.95;
+  position: relative;
+}
+
+.hero-main h1 .accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: drawLine 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+}
+
+@keyframes drawLine {
+  to { transform: scaleX(1); }
+}
+
+.hero-main .hero-subtitle {
+  font-size: clamp(15px, 1.2vw, 18px);
+  color: var(--cream);
+  opacity: 0.8;
+  margin-bottom: 36px;
+  max-width: 620px;
+  line-height: 1.55;
+  font-weight: 400;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+}
+
+.hero-main .hero-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--yellow);
+  color: var(--graphite-deep);
+  box-shadow: var(--shadow-yellow);
+}
+
+.btn-primary:hover {
+  background: #FFD250;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -10px rgba(232, 172, 55, 0.7);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--cream);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-secondary:hover {
+  background: var(--cream);
+  color: var(--graphite-deep);
+  border-color: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-dark {
+  background: var(--black);
+  color: var(--white);
+}
+
+.btn-dark:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+/* Scroll indicator du hero principal */
+.hero-main .hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(247, 243, 234, 0.55);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+  pointer-events: none;
+}
+
+.hero-main .hero-scroll-line {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(180deg, transparent 0%, rgba(247, 243, 234, 0.3) 50%, transparent 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-main .hero-scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -38px;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: linear-gradient(180deg, transparent 0%, var(--yellow) 50%, transparent 100%);
+  animation: scrollDown 2.2s ease-in-out infinite;
+}
+
+@keyframes scrollDown {
+  0% { top: -38px; }
+  100% { top: 100%; }
+}
+
+/* ===== SECTION 3 EXPERTISES ===== */
+.expertises-section {
+  background: var(--cream);
+  padding: 100px 0;
+  position: relative;
+}
+
+.expertises-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 60px;
+}
+
+.expertises-header h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--graphite-deep);
+}
+
+/* Grille premium : 1 grande carte (3D) à gauche + 2 cartes empilées à droite */
+.expertises-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.expertise-card {
+  position: relative;
+  border-radius: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  background: var(--graphite-deep);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.expertise-featured {
+  grid-row: 1 / 3;
+  min-height: 580px;
+}
+
+.expertise-secondary {
+  /* V78 : restauration de la hauteur originale (280px) — le logo est désormais en bas-droite
+     donc plus besoin de réserver de l'espace en haut comme on faisait en V74 */
+  min-height: 280px;
+}
+
+.expertise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -20px rgba(17, 17, 17, 0.5);
+  border-color: rgba(232, 172, 55, 0.35);
+}
+
+/* Média de fond (vidéo + fallback image) */
+.expertise-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.expertise-media video,
+.expertise-media img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Vidéo au-dessus de l'image fallback : la vidéo prend la place dès qu'elle se charge */
+.expertise-media video { z-index: 2; }
+.expertise-media img { z-index: 1; }
+
+.expertise-card:hover .expertise-media video,
+.expertise-card:hover .expertise-media img {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Overlay sombre élégant */
+.expertise-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(17, 17, 17, 0.1) 0%, rgba(17, 17, 17, 0.3) 50%, rgba(17, 17, 17, 0.92) 100%);
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.expertise-card:hover .expertise-overlay {
+  background:
+    linear-gradient(180deg, rgba(17, 17, 17, 0.15) 0%, rgba(17, 17, 17, 0.4) 45%, rgba(17, 17, 17, 0.94) 100%);
+}
+
+/* Numéro 01 / 02 / 03 en haut à droite */
+.expertise-index {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 3;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(247, 243, 234, 0.5);
+  pointer-events: none;
+}
+
+.expertise-featured .expertise-index {
+  font-size: 14px;
+}
+
+/* Logo FollowView3D dans l'angle des cartes (V78 : déplacé en bas-droite, icône seule sans texte
+   Auparavant en haut-gauche avec logo complet — texte du logo enlevé pour ne pas faire doublon
+   avec le badge de la carte et avec le titre déjà très présents) */
+.expertise-logo {
+  position: absolute;
+  /* V81 : bottom augmenté de 22 → 32px pour s'assurer que le logo soit entièrement
+     visible et ne soit pas tronqué par l'overflow:hidden de .expertise-card
+     (qui sert au clip de la vidéo de fond avec border-radius) */
+  bottom: 32px;
+  right: 28px;
+  z-index: 3;
+  width: 50px;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  /* Drop-shadow renforcé : l'icône doit ressortir sur les zones sombres en bas de carte */
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+  opacity: 0.95;
+}
+
+/* Carte featured (la grande à gauche) : icône un peu plus grande pour la hiérarchie visuelle */
+.expertise-featured .expertise-logo {
+  bottom: 38px;
+  right: 36px;
+  width: 64px;
+}
+
+/* Contenu de la carte (badge + titre + texte + CTA) */
+.expertise-content {
+  position: relative;
+  z-index: 2;
+  padding: 32px;
+  width: 100%;
+  color: var(--cream);
+}
+
+.expertise-featured .expertise-content {
+  padding: 44px;
+}
+
+.expertise-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: 'Sora', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.expertise-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(232, 172, 55, 0.7);
+}
+
+.expertise-content h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 12px;
+  color: var(--cream);
+}
+
+.expertise-featured .expertise-content h3 {
+  font-size: clamp(28px, 2.4vw, 36px);
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.expertise-content p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(247, 243, 234, 0.78);
+  margin-bottom: 20px;
+  max-width: 460px;
+}
+
+.expertise-featured .expertise-content p {
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.expertise-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.expertise-cta svg {
+  transition: transform 0.3s ease;
+}
+
+.expertise-card:hover .expertise-cta {
+  background: var(--yellow);
+  color: var(--graphite-deep);
+  border-color: var(--yellow);
+}
+
+.expertise-card:hover .expertise-cta svg {
+  transform: translateX(3px);
+}
+
+/* Carte 3D mise en avant : CTA légèrement plus marqué */
+.expertise-featured .expertise-cta {
+  font-size: 14px;
+  padding: 12px 22px;
+}
+
+/* ===== SECTION VALUE ===== */
+.section {
+  padding: 100px 0;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 64px;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--graphite);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 16px;
+  position: relative;
+  padding-left: 28px;
+}
+
+.section-eyebrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 20px;
+  height: 1px;
+  background: var(--graphite);
+}
+
+/* Modifier --hero : eyebrow agrandi en titre principal de section, en jaune */
+/* Appliqué uniquement aux 3 sections produits (Matterport / Site internet / Écrans dynamiques) */
+.section-eyebrow--hero {
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--yellow);
+  margin-bottom: 22px;
+  padding-left: 0;
+}
+
+.section-eyebrow--hero::before {
+  display: none;  /* on retire le tiret avant : le mot devient son propre visuel fort */
+}
+
+/* V77 / V85 : eyebrows soulignés en jaune signature (touche identitaire FollowView3D)
+   Modificateurs :
+     --question : eyebrows interrogatifs ("Pour qui ?", "Pourquoi la 3D ?")
+     --underlined : autres eyebrows soulignés (Nos expertises, Process, Notre méthode,
+                    Les étapes, Zone d'intervention, Contact)
+   Note : les eyebrows --hero (grands titres MATTERPORT/SITE INTERNET/ÉCRANS DYNAMIQUES)
+   restent SANS soulignement car ils sont déjà très visuels par leur taille */
+.section-eyebrow--question,
+.section-eyebrow--underlined {
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+/* Cas spécifique : matterport-eyebrow a son propre style de base, on l'override avec --hero */
+.matterport-eyebrow.section-eyebrow--hero {
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--yellow);
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.section h2 {
+  font-size: clamp(30px, 3.5vw, 46px);
+  margin-bottom: 18px;
+  line-height: 1.1;
+}
+
+.section-subtitle {
+  font-size: 17px;
+  color: var(--dark);
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.value-card {
+  background: var(--white);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 14px 40px -20px rgba(46, 51, 54, 0.12);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  border: 1px solid rgba(46, 51, 54, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.value-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--yellow);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px -22px rgba(46, 51, 54, 0.22);
+}
+
+.value-card:hover::before { transform: scaleX(1); }
+
+/* Image hero en haut de la carte */
+.value-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--cream);
+}
+
+.value-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.value-card:hover .value-img img {
+  transform: scale(1.05);
+}
+
+/* Icône superposée en bas-gauche de l'image (effet badge premium) */
+.value-icon {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  /* Badge jaune signature FollowView3D (V60 : remplace le graphite) */
+  background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite-deep);
+  box-shadow: 0 8px 24px -6px rgba(232, 172, 55, 0.55), 0 0 0 4px rgba(255, 255, 255, 0.95);
+  z-index: 2;
+}
+
+/* Bloc texte en bas de la carte */
+.value-text {
+  padding: 28px 28px 32px;
+}
+
+.value-card h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+}
+
+.value-card p {
+  font-family: 'Inter', sans-serif;
+  color: var(--graphite-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== SECTION MATTERPORT (refonte version claire V36) ===== */
+.matterport-section {
+  background: var(--cream);
+  color: var(--graphite-deep);
+  padding: 110px 0 120px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Halos lumineux d'ambiance jaunes/graphite (cohérence reste du site) */
+.matterport-grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 20%, rgba(232, 172, 55, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 50% 90%, rgba(46, 51, 54, 0.04) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.matterport-glow {
+  display: none;
+}
+
+.matterport-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== V76 : Logo signature au-dessus des eyebrows des 3 grandes sections
+   (Matterport, Site internet, Écrans dynamiques) — classe commune réutilisable
+   pour garantir la cohérence visuelle entre les 3 introductions ===== */
+.section-hero-logo {
+  display: block;
+  height: 60px;
+  width: auto;
+  margin: 0 auto 24px;
+  /* Léger drop-shadow pour donner du corps au logo sur fond cream/blanc */
+  filter: drop-shadow(0 4px 12px rgba(46, 51, 54, 0.08));
+}
+
+/* Header */
+.matterport-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 50px;
+}
+
+.matterport-eyebrow {
+  display: inline-block;
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--graphite-soft);
+  margin-bottom: 20px;
+}
+
+.matterport-header h2 {
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--graphite-deep);
+  margin-bottom: 20px;
+}
+
+.matterport-accent-red {
+  color: var(--graphite);
+  font-style: italic;
+  font-weight: 700;
+  position: relative;
+}
+
+.matterport-accent-red::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+}
+
+/* V90 : sous-titre Matterport — adapté pour gérer 3 paragraphes pédagogique + commercial
+   max-width agrandie pour confort de lecture, espacement vertical entre paragraphes */
+.matterport-subtitle {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--graphite-soft);
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.matterport-subtitle + .matterport-subtitle {
+  margin-top: 18px;
+}
+
+/* Mise en valeur des chiffres clés / bénéfices dans les paragraphes */
+.matterport-subtitle strong {
+  color: var(--graphite-deep);
+  font-weight: 600;
+}
+
+/* Démo Matterport intégrée (version claire) */
+.matterport-demo {
+  max-width: 1100px;
+  margin: 0 auto 70px;
+  position: relative;
+}
+
+.matterport-demo-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(232, 172, 55, 0.12);
+  border: 1px solid rgba(232, 172, 55, 0.4);
+  border-radius: 100px;
+  font-family: 'Sora', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--graphite-deep);
+  margin-bottom: 20px;
+}
+
+.matterport-demo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 12px rgba(232, 172, 55, 0.7);
+  animation: mpPulse 2s ease-in-out infinite;
+}
+
+@keyframes mpPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.85); }
+}
+
+/* Onglets cliquables pour sélectionner le type d'établissement à visualiser */
+.matterport-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.mp-tab {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--graphite-soft);
+  background: var(--white);
+  border: 1px solid rgba(46, 51, 54, 0.1);
+  padding: 10px 20px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  position: relative;
+  outline: none;
+}
+
+.mp-tab:hover:not(.is-active) {
+  border-color: rgba(232, 172, 55, 0.5);
+  color: var(--graphite-deep);
+  transform: translateY(-1px);
+}
+
+.mp-tab:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+.mp-tab.is-active {
+  background: var(--graphite-deep);
+  color: var(--cream);
+  border-color: var(--graphite-deep);
+  box-shadow: 0 6px 16px -6px rgba(46, 51, 54, 0.4);
+  padding-left: 28px;
+}
+
+.mp-tab.is-active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yellow);
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px rgba(232, 172, 55, 0.7);
+}
+
+/* Effet de transition de l'iframe quand on change d'onglet */
+.matterport-demo-frame iframe {
+  transition: opacity 0.3s ease;
+}
+
+.matterport-demo-frame.is-loading iframe {
+  opacity: 0.4;
+}
+
+.matterport-demo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--graphite-deep);
+  border: 1px solid rgba(46, 51, 54, 0.1);
+  box-shadow: 0 30px 80px -20px rgba(46, 51, 54, 0.25), 0 0 60px -10px rgba(232, 172, 55, 0.08);
+}
+
+.matterport-demo-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Grille des cartes (plus de colonne gauche, cartes en pleine largeur) */
+.matterport-grid {
+  display: block;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* Colonne unique : cartes accordéon */
+.matterport-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ===== Cartes Matterport horizontales (V43 : grande image gauche + texte droite) ===== */
+.mp-card {
+  display: flex;
+  align-items: stretch;
+  background: var(--white);
+  border: 1px solid rgba(46, 51, 54, 0.07);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.mp-card:hover {
+  border-color: rgba(232, 172, 55, 0.4);
+  box-shadow: 0 20px 40px -20px rgba(46, 51, 54, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Image carrée à gauche */
+.mp-card-img {
+  flex-shrink: 0;
+  width: 240px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--cream);
+  position: relative;
+}
+
+.mp-card-img img,
+.mp-card-img video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mp-card:hover .mp-card-img img,
+.mp-card:hover .mp-card-img video {
+  transform: scale(1.05);
+}
+
+/* Bloc texte à droite (numéro + titre + description) */
+.mp-card-text {
+  flex: 1;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mp-card-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  /* V73 : harmonisation avec .process-num — typo jaune signature, sans fond ni cadre
+     pour cohérence visuelle avec les autres numérotations (process, web-tl, dooh-tl) */
+  color: var(--yellow-deep, #D59518);
+  align-self: flex-start;
+}
+
+.mp-card-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.mp-card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--graphite-soft);
+  margin: 0;
+}
+
+/* ===== AJOUT V42 : Intro, miniatures et conclusion des cartes Matterport ===== */
+
+/* Phrase d'intro avant les cartes */
+.matterport-cards-intro {
+  text-align: center;
+  font-family: 'Sora', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--graphite-deep);
+  letter-spacing: -0.005em;
+  margin: 0 auto 32px;
+  max-width: 720px;
+}
+
+/* ===== SECTION SITE INTERNET (refonte minimaliste Apple-like V31) ===== */
+.web-section {
+  background: var(--cream);
+  padding: 140px 0 130px;
+  position: relative;
+  overflow: hidden;
+}
+
+.web-bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 20%, rgba(232, 172, 55, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 50% 90%, rgba(46, 51, 54, 0.04) 0%, transparent 70%);
+}
+
+.web-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Bloc 1 : Hero du service ===== */
+.web-hero {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 90px;
+}
+
+.web-hero h2 {
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--graphite-deep);
+  margin-bottom: 22px;
+  margin-top: 16px;
+}
+
+.web-accent {
+  color: var(--graphite);
+  font-style: italic;
+  position: relative;
+}
+
+.web-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+}
+
+/* V90 : sous-titre Site Internet — adapté pour 3 paragraphes pédagogique + commercial */
+.web-hero-subtitle {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--graphite-soft);
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.web-hero-subtitle + .web-hero-subtitle {
+  margin-top: 18px;
+}
+
+.web-hero-subtitle strong {
+  color: var(--graphite-deep);
+  font-weight: 600;
+}
+
+/* ===== Bloc 2 : Stage monumental avec mockup et cartes flottantes ===== */
+.web-stage {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto 120px;
+  padding: 60px 100px 60px;
+}
+
+.web-stage-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(232, 172, 55, 0.12) 0%, transparent 60%);
+  filter: blur(40px);
+}
+
+.web-stage-inner {
+  position: relative;
+  width: 100%;
+}
+
+.web-stage-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 50px 80px rgba(46, 51, 54, 0.22))
+    drop-shadow(0 20px 40px rgba(46, 51, 54, 0.1));
+  animation: stageFloat 6s ease-in-out infinite alternate;
+}
+
+@keyframes stageFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+/* ===== MOCKUP VIVANT : écrans laptop + iPhone animés (basé sur web-mockup-blank.png) ===== */
+
+/* Conteneur du mockup avec ratio image fixé pour que les overlays restent pixel-perfect */
+.web-stage-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1448 / 1086;
+  animation: stageFloat 6s ease-in-out infinite alternate;
+}
+
+/* L'image n'a plus l'animation (déplacée sur le wrapper) */
+.web-stage-screen .web-stage-image {
+  animation: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* ===== OVERLAY LAPTOP : 3 phases qui s'enchaînent ===== */
+/* Coordonnées mesurées sur image 1448×1086 (vue de face, écran rectangle parfait) :
+   top 20.26% / left 14.23% / width 55.66% / height 48.43% */
+.laptop-screen {
+  position: absolute;
+  top: 20.26%;
+  left: 14.23%;
+  width: 55.66%;
+  height: 48.43%;
+  z-index: 2;
+  overflow: hidden;
+  background: #FFFFFF;
+  /* Container query : permet aux unités cqw/cqi de se baser sur la taille de cet écran */
+  container-type: inline-size;
+  container-name: laptop;
+}
+
+/* ===== MINI-SITE INTERACTIF (3 pages cliquables : Accueil / Visite 3D / Réserver) ===== */
+
+/* Nav supérieure du mini-site */
+.mini-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(46, 51, 54, 0.06);
+  z-index: 5;
+}
+
+/* Variables locales Maison Aurea (scopées au mini-site mobile et laptop)
+   Évite de polluer la palette globale FollowView3D (cream/graphite/jaune) */
+.laptop-screen,
+.iphone-screen {
+  --ma-gold: #C8A35C;          /* doré champagne signature */
+  --ma-gold-deep: #A88643;     /* doré foncé hover */
+  --ma-cream: #F8F4ED;         /* fond cream Maison Aurea */
+  --ma-graphite: #2E3336;      /* graphite (réutilise palette FV3D) */
+  --ma-soft: #8D9498;          /* gris doux pour textes secondaires */
+}
+
+.mini-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 2.2cqw, 13px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+  letter-spacing: -0.02em;
+}
+
+/* Monogramme M doré : cercle avec lettre, signature Maison Aurea */
+.mini-nav-brand-mark {
+  width: clamp(12px, 3cqw, 18px);
+  height: clamp(12px, 3cqw, 18px);
+  border-radius: 50%;
+  border: 1px solid var(--ma-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 1.8cqw, 11px);
+  font-weight: 600;
+  color: var(--ma-gold);
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.mini-nav-brand-name {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: clamp(6px, 1.8cqw, 11px);
+}
+
+.mini-nav-links {
+  display: flex;
+  gap: 4%;
+}
+
+.mini-nav-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(6px, 1.8cqw, 11px);
+  font-weight: 500;
+  color: #8D9498;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
+.mini-nav-link:hover {
+  color: #2E3336;
+}
+
+.mini-nav-link.is-active {
+  color: #2E3336;
+  font-weight: 700;
+}
+
+.mini-nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ma-gold);
+  border-radius: 1px;
+}
+
+/* Conteneur des pages */
+.mini-pages {
+  position: absolute;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.mini-page {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mini-page.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* ----- Page Accueil ----- */
+.mini-page-accueil {
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-hero-img {
+  height: 50%;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%),
+    url('hero-suite.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 4%;
+}
+
+.mini-hero-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 163, 92, 0.3);
+  border-radius: 100px;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(6px, 1.6cqw, 10px);
+  font-weight: 600;
+  color: var(--ma-graphite);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.mini-hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4% 6%;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--ma-cream) 100%);
+}
+
+.mini-hero-eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(6px, 1.7cqw, 11px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ma-gold);
+  margin-bottom: 1.5%;
+}
+
+.mini-hero-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(13px, 4.5cqw, 28px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 0 2.5%;
+}
+
+.mini-hero-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(6px, 1.8cqw, 11px);
+  line-height: 1.45;
+  color: var(--ma-soft);
+  margin: 0 0 4%;
+  max-width: 80%;
+}
+
+/* CTA générique du mini-site */
+.mini-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 2.2cqw, 13px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.mini-cta-primary {
+  background: var(--ma-gold);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(200, 163, 92, 0.4), 0 0 0 0 rgba(200, 163, 92, 0.5);
+  animation: ctaMiniPulse 1.8s ease-in-out infinite;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: clamp(6px, 1.9cqw, 11px);
+  padding: 9px 18px;
+}
+
+.mini-cta-primary:hover {
+  transform: translateY(-1px);
+  background: var(--ma-gold-deep);
+}
+
+.mini-cta-dark {
+  background: var(--ma-graphite);
+  color: var(--ma-cream);
+  box-shadow: 0 6px 16px rgba(46, 51, 54, 0.3);
+  width: 100%;
+  justify-content: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mini-cta-dark:hover {
+  transform: translateY(-1px);
+}
+
+.mini-cta-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2E3336;
+}
+
+@keyframes ctaMiniPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(200, 163, 92, 0.4), 0 0 0 0 rgba(200, 163, 92, 0.5); }
+  50%      { box-shadow: 0 4px 12px rgba(200, 163, 92, 0.4), 0 0 0 8px rgba(200, 163, 92, 0); }
+}
+
+/* ----- Page Visite 3D ----- */
+.mini-page-visite {
+  background: #1F1F1F;
+}
+
+.mini-visite-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.mini-visite-live {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(6px, 1.8cqw, 11px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #FFFFFF;
+}
+
+.mini-visite-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF3158;
+  box-shadow: 0 0 8px rgba(255, 49, 88, 0.9);
+  animation: liveBlink 1.2s ease-in-out infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* ----- Page Réserver ----- */
+.mini-page-reserver {
+  background: linear-gradient(180deg, var(--ma-cream) 0%, #FFFFFF 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-reserve-content {
+  width: 80%;
+  max-width: 100%;
+  text-align: left;
+}
+
+.mini-reserve-eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(6px, 2cqw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--ma-gold);
+  display: block;
+  margin-bottom: 2%;
+}
+
+.mini-reserve-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(14px, 4.5cqw, 28px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 0 6%;
+}
+
+.mini-reserve-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4%;
+}
+
+.mini-reserve-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mini-reserve-field {
+  background: #FFFFFF;
+  border: 1px solid rgba(200, 163, 92, 0.25);
+  border-radius: 8px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-reserve-field-full {
+  grid-column: 1 / -1;
+}
+
+.mini-reserve-label {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(5px, 1.4cqw, 9px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ma-soft);
+  margin-bottom: 2px;
+}
+
+.mini-reserve-value {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 2.2cqw, 13px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+}
+
+.mini-reserve-info {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(5px, 1.5cqw, 9px);
+  color: var(--ma-soft);
+  text-align: center;
+  margin: 4% 0 0;
+}
+
+/* ----- Reflet glissant subtil (effet écran allumé premium) ----- */
+.screen-reflection {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  animation: reflectionSlide 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 4;
+}
+
+@keyframes reflectionSlide {
+  0%   { left: -100%; }
+  60%  { left: -100%; }
+  85%  { left: 200%; }
+  100% { left: 200%; }
+}
+
+/* ===== OVERLAY iPHONE : capture statique mobile responsive du site ===== */
+/* Coordonnées mesurées sur image 1448×1086 (vue de face, écran rectangle parfait) :
+   top 34.16% / left 79.90% / width 14.43% / height 41.80%
+   Note : on décale légèrement le top et on rogne la hauteur pour ne pas masquer la Dynamic Island */
+.iphone-screen {
+  position: absolute;
+  top: 36.5%;
+  left: 79.90%;
+  width: 14.43%;
+  height: 39.2%;
+  z-index: 2;
+  overflow: hidden;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8F5EC 100%);
+  /* Container query : permet aux unités cqw de se baser sur la taille de cet écran */
+  container-type: inline-size;
+  container-name: iphone;
+  /* Coins arrondis pour épouser le design iPhone (proportionnels à l'écran) */
+  border-radius: 5cqw;
+}
+
+.iphone-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14% 8% 4%;
+  position: relative;
+}
+
+.iphone-status {
+  align-self: flex-end;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 6cqw, 12px);
+  font-weight: 700;
+  color: #2E3336;
+  margin-bottom: 12%;
+}
+
+.iphone-logo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(6px, 5cqw, 11px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8%;
+}
+
+.iphone-logo-mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--ma-gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--ma-gold);
+  flex-shrink: 0;
+  margin-right: 2px;
+}
+
+/* Conservé pour rétro-compatibilité, mais plus utilisé dans le HTML actuel */
+.iphone-logo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--ma-gold);
+}
+
+.iphone-hero-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%),
+    url('hero-suite-phone.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+  margin-bottom: 8%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Le rond central jaune lumineux est supprimé : la photo réelle se suffit à elle-même */
+.iphone-hero-img::after {
+  content: none;
+}
+
+.iphone-hero-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(8px, 8cqw, 16px);
+  font-weight: 700;
+  color: var(--ma-graphite);
+  letter-spacing: -0.015em;
+  margin-bottom: 2%;
+}
+
+.iphone-hero-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(6px, 5.5cqw, 11px);
+  color: var(--ma-soft);
+  margin-bottom: 8%;
+}
+
+.iphone-cta {
+  padding: 6px 18px;
+  background: var(--ma-gold);
+  color: #FFFFFF;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(7px, 6.5cqw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* Track des cartes flottantes : transparent sur desktop (les enfants gardent leur position absolute),
+   carrousel scrollable sur mobile (override dans la media query) */
+.float-cards-track {
+  display: contents;
+}
+
+/* Cartes flottantes premium glassmorphism */
+.float-card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow:
+    0 25px 60px -15px rgba(46, 51, 54, 0.28),
+    0 8px 16px -4px rgba(46, 51, 54, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.web-stage.visible .float-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.float-card-tl { top: 6%;    left: 0;     animation: cardFloat1 7s ease-in-out 0.5s infinite alternate; }
+.float-card-tr { top: 18%;   right: 0;    animation: cardFloat2 8s ease-in-out 1.2s infinite alternate; }
+.float-card-bl { bottom: 22%; left: -2%;  animation: cardFloat3 9s ease-in-out 0.3s infinite alternate; }
+.float-card-br { bottom: 10%; right: -1%; animation: cardFloat1 7.5s ease-in-out 0.9s infinite alternate; }
+
+.web-stage.visible .float-card-tl { transition-delay: 0.4s; }
+.web-stage.visible .float-card-tr { transition-delay: 0.6s; }
+.web-stage.visible .float-card-bl { transition-delay: 0.8s; }
+.web-stage.visible .float-card-br { transition-delay: 1.0s; }
+
+@keyframes cardFloat1 { 0% { translate: 0 0; } 100% { translate: 2px -8px; } }
+@keyframes cardFloat2 { 0% { translate: 0 0; } 100% { translate: -3px -6px; } }
+@keyframes cardFloat3 { 0% { translate: 0 0; } 100% { translate: 4px -10px; } }
+
+.float-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  /* V75 : badge jaune signature plein (cohérent avec .value-icon V60 et .zone-info-icon V69)
+     Avant : gradient jaune translucide qui rendait visuellement gris-beige sur fond clair */
+  background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite-deep);
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px -4px rgba(232, 172, 55, 0.45);
+}
+
+.float-card-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.float-card-text strong {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.float-card-text span {
+  font-size: 11.5px;
+  color: var(--graphite-soft);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* ===== Bloc 3 : Timeline minimaliste 4 étapes ===== */
+.web-timeline {
+  max-width: 1100px;
+  margin: 0 auto 110px;
+}
+
+.web-timeline-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.web-timeline-header h3 {
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--graphite-deep);
+  margin-top: 12px;
+}
+
+.web-timeline-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  position: relative;
+}
+
+.web-timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 90px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: repeating-linear-gradient(to right, rgba(46, 51, 54, 0.25) 0 6px, transparent 6px 12px);
+  z-index: 0;
+}
+
+.web-tl-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.web-tl-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid rgba(46, 51, 54, 0.08);
+  box-shadow: 0 12px 30px -16px rgba(46, 51, 54, 0.18);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.web-tl-step:hover .web-tl-img {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -16px rgba(46, 51, 54, 0.28);
+}
+
+.web-tl-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.web-tl-step:hover .web-tl-img img {
+  transform: scale(1.06);
+}
+
+.web-tl-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.web-tl-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--yellow-deep, #D59518);
+}
+
+.web-tl-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+}
+
+/* ===== CTA Final mutualisé V58 (Matterport / Site internet / Écrans dynamiques)
+   Fond photo sombre (showroom écrans dynamiques) + overlay graphite pour lisibilité
+   + halo jaune signature subtil + textes blancs + bouton primaire jaune conservé ===== */
+.cta-final {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  padding: 70px 50px 60px;
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  /* Fond photo + overlay sombre graphite pour assurer le contraste texte/image */
+  background-image:
+    linear-gradient(135deg, rgba(26, 29, 28, 0.88) 0%, rgba(46, 51, 54, 0.78) 100%),
+    url('cta-hero-bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(232, 172, 55, 0.22);
+  box-shadow: 0 30px 80px -30px rgba(26, 29, 28, 0.55), 0 12px 28px -10px rgba(26, 29, 28, 0.3);
+  isolation: isolate;
+}
+
+/* Halo jaune signature en haut à droite */
+.cta-final::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(232, 172, 55, 0.28) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Halo subtil en bas à gauche pour équilibrer la composition */
+.cta-final::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(232, 172, 55, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-final h3 {
+  font-size: clamp(26px, 3.2vw, 38px);
+  font-weight: 700;
+  color: var(--cream-light);
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+  line-height: 1.15;
+}
+
+.cta-final > p {
+  font-size: 16px;
+  color: rgba(248, 245, 236, 0.7);
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-final .cta-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Override .btn-ghost dans le contexte fond sombre : bordure et texte clairs */
+.cta-final .btn-ghost {
+  color: var(--cream-light);
+  border-color: rgba(248, 245, 236, 0.35);
+}
+
+.cta-final .btn-ghost:hover {
+  background: var(--cream-light);
+  color: var(--graphite-deep);
+  border-color: var(--cream-light);
+  box-shadow: 0 12px 28px -10px rgba(255, 255, 255, 0.25);
+}
+
+/* Ligne d'inclusions textuelle (puces dot · entre items) — version sombre */
+.cta-includes-line {
+  list-style: none;
+  padding: 0;
+  margin: 36px 0 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 26px;
+  font-family: 'Sora', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(248, 245, 236, 0.65);
+  position: relative;
+  z-index: 1;
+}
+
+.cta-includes-line li {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.cta-includes-line li:not(:first-child)::before {
+  content: '·';
+  position: absolute;
+  left: -14px;
+  color: rgba(248, 245, 236, 0.45);
+  font-weight: 700;
+}
+
+/* Bouton ghost (secondaire) */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 26px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  background: transparent;
+  color: var(--graphite-deep);
+  border: 1.5px solid rgba(46, 51, 54, 0.22);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.btn-ghost:hover {
+  background: var(--graphite-deep);
+  color: var(--cream);
+  border-color: var(--graphite-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(46, 51, 54, 0.4);
+}
+
+/* ===== SECTION DOOH (refonte split horizontal data-driven V32) ===== */
+.dooh-section {
+  background: var(--cream-light);
+  padding: 140px 0 130px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dooh-bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 40% at 80% 30%, rgba(232, 172, 55, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 20% 80%, rgba(46, 51, 54, 0.04) 0%, transparent 70%);
+}
+
+.dooh-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Bloc 1 : Hero épuré ===== */
+.dooh-hero {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 90px;
+}
+
+.dooh-hero h2 {
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--graphite-deep);
+  margin-bottom: 22px;
+  margin-top: 16px;
+}
+
+.dooh-accent {
+  color: var(--graphite);
+  font-style: italic;
+  position: relative;
+}
+
+.dooh-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--yellow) 30%, var(--yellow) 70%, transparent 100%);
+  border-radius: 2px;
+}
+
+/* V90 : sous-titre DOOH — adapté pour 3 paragraphes pédagogique + commercial */
+.dooh-hero-subtitle {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--graphite-soft);
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.dooh-hero-subtitle + .dooh-hero-subtitle {
+  margin-top: 18px;
+}
+
+.dooh-hero-subtitle strong {
+  color: var(--graphite-deep);
+  font-weight: 600;
+}
+
+/* ===== Bloc 2 : Split horizontal asymétrique ===== */
+.dooh-split {
+  max-width: 1200px;
+  margin: 0 auto 110px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 70px;
+  align-items: center;
+}
+
+/* Côté gauche : carrousel auto-défilant 4 slides
+   Effet : Ken Burns (zoom subtil) sur slide active + fondu croisé entre slides
+   Drop-shadow conservée pour le côté flottant premium */
+.dooh-split-image {
+  position: relative;
+}
+
+.dooh-carousel {
+  position: relative;
+  width: 100%;
+  filter:
+    drop-shadow(0 40px 70px rgba(46, 51, 54, 0.22))
+    drop-shadow(0 15px 30px rgba(46, 51, 54, 0.08));
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-split:hover .dooh-carousel {
+  transform: translateY(-6px);
+}
+
+/* Conteneur des slides : aspect-ratio 16:9 fixe pour éviter les sauts de hauteur */
+.dooh-slides {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--cream-light);
+  /* V62 : cursor grab pour signaler que le carrousel est draggable */
+  cursor: grab;
+  /* Désactiver la sélection texte / glisser-déposer natif d'image pendant le drag */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  /* Empêcher le scroll vertical natif d'interférer avec notre swipe horizontal */
+  touch-action: pan-y;
+}
+
+.dooh-slides.is-dragging {
+  cursor: grabbing;
+}
+
+.dooh-slides img {
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* Chaque slide : superposée en absolute, glisse de droite (start) vers gauche (sortie)
+   - Slide entrante : translateX(100%) → translateX(0)
+   - Slide active : translateX(0)
+   - Slide sortante : translateX(0) → translateX(-100%)
+   La direction "gauche-vers-out" est gérée par classe .is-leaving via JS */
+.dooh-slide {
+  position: absolute;
+  inset: 0;
+  transform: translateX(100%);
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.dooh-slide.is-active {
+  transform: translateX(0);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.dooh-slide.is-leaving {
+  transform: translateX(-100%);
+  z-index: 1;
+}
+
+/* V62 : sens inverse (swipe → droite = aller à la slide précédente)
+   La slide entrante arrive depuis la gauche, la sortante part vers la droite */
+.dooh-slides.is-reversed .dooh-slide {
+  transform: translateX(-100%);
+}
+
+.dooh-slides.is-reversed .dooh-slide.is-active {
+  transform: translateX(0);
+}
+
+.dooh-slides.is-reversed .dooh-slide.is-leaving {
+  transform: translateX(100%);
+}
+
+.dooh-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1);
+}
+
+/* Ken Burns sur slide active : zoom subtil pendant l'affichage (3s),
+   se relance à chaque slide qui devient active */
+.dooh-slide.is-active img {
+  animation: doohKenBurns 4s ease-out forwards;
+}
+
+@keyframes doohKenBurns {
+  from { transform: scale(1.005); }
+  to   { transform: scale(1.06); }
+}
+
+/* Dots de navigation style Instagram avec barre de progression auto */
+.dooh-dots {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.dooh-dot {
+  position: relative;
+  width: 28px;
+  height: 4px;
+  padding: 0;
+  border: none;
+  background: rgba(46, 51, 54, 0.18);
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+.dooh-dot:hover {
+  background: rgba(46, 51, 54, 0.35);
+}
+
+/* Barre de progression interne qui se remplit pendant l'autoplay (slide active uniquement) */
+.dooh-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--graphite);
+  border-radius: 2px;
+}
+
+.dooh-dot.is-active::after {
+  /* Animation déclenchée à l'activation, pilotée par JS via reset DOM */
+  animation: doohDotProgress var(--dooh-interval, 3000ms) linear forwards;
+}
+
+@keyframes doohDotProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* Pause de l'autoplay au survol : on stoppe la progression visuellement
+   (le JS gère la pause réelle de l'autoplay) */
+.dooh-carousel.is-paused .dooh-dot.is-active::after {
+  animation-play-state: paused;
+}
+
+.dooh-carousel.is-paused .dooh-slide.is-active img {
+  animation-play-state: paused;
+}
+
+/* Côté droit : 3 stats data-driven */
+.dooh-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.dooh-stat {
+  position: relative;
+  padding-top: 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-split.visible .dooh-stat {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dooh-split.visible .dooh-stat:nth-child(1) { transition-delay: 0.3s; }
+.dooh-split.visible .dooh-stat:nth-child(2) { transition-delay: 0.5s; }
+.dooh-split.visible .dooh-stat:nth-child(3) { transition-delay: 0.7s; }
+
+/* Fine ligne pointillée jaune en haut de chaque stat (séparateur signature) */
+.dooh-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--yellow) 0 5px, transparent 5px 9px);
+  border-radius: 1px;
+}
+
+.dooh-stat-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.dooh-stat-num {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(54px, 6vw, 84px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--graphite-deep);
+  line-height: 0.95;
+}
+
+.dooh-stat-sym {
+  color: var(--yellow);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.dooh-stat-text {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--graphite-soft);
+  max-width: 360px;
+  margin: 0;
+}
+
+/* ===== Bloc 2.5 : Timeline 4 étapes DOOH (V59)
+   Pattern visuel calqué sur .web-timeline de la section Site internet
+   pour cohérence inter-sections (mêmes proportions, même hover, même couleurs) ===== */
+.dooh-timeline {
+  margin: 100px auto 80px;
+  max-width: 1100px;
+}
+
+.dooh-timeline-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.dooh-timeline-header .section-eyebrow {
+  display: inline-block;
+}
+
+.dooh-timeline-header h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--graphite-deep);
+  margin-top: 12px;
+  line-height: 1.1;
+}
+
+.dooh-timeline-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  position: relative;
+}
+
+/* Ligne pointillée discrète qui relie visuellement les 4 étapes (au-dessus des numéros) */
+.dooh-timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 90px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: repeating-linear-gradient(to right, rgba(46, 51, 54, 0.25) 0 6px, transparent 6px 12px);
+  z-index: 0;
+}
+
+.dooh-tl-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.dooh-tl-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid rgba(46, 51, 54, 0.08);
+  box-shadow: 0 12px 30px -16px rgba(46, 51, 54, 0.18);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-tl-step:hover .dooh-tl-img {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -16px rgba(46, 51, 54, 0.28);
+}
+
+.dooh-tl-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dooh-tl-step:hover .dooh-tl-img img {
+  transform: scale(1.06);
+}
+
+.dooh-tl-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.dooh-tl-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--yellow-deep, #D59518);
+}
+
+.dooh-tl-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+}
+
+/* ===== SECTION TARGETS ===== */
+.targets-section {
+  padding: 100px 0;
+}
+
+.targets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.target-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  cursor: pointer;
+  background: var(--dark);
+}
+
+.target-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+
+.target-card:hover .target-image {
+  transform: scale(1.08);
+}
+
+.target-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(26, 29, 28, 0.55) 70%, rgba(26, 29, 28, 0.95) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  transition: background 0.4s ease;
+}
+
+.target-card:hover .target-overlay {
+  background: linear-gradient(180deg, rgba(26, 29, 28, 0.15) 0%, rgba(26, 29, 28, 0.4) 50%, rgba(26, 29, 28, 0.95) 100%);
+}
+
+.target-card h3 {
+  color: var(--white);
+  font-size: 19px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-card h3::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--cream);
+  border-radius: 50%;
+}
+
+/* Target images — palette réelle harmonisée au logo et à l'univers premium */
+.target-1 { background-image: url('hotel.jpg'); }
+.target-2 { background-image: url('restaurant.png'); }
+.target-3 { background-image: url('salon.png'); }
+.target-4 { background-image: url('sante.jpg'); }
+.target-5 { background-image: url('showroom.png'); }
+.target-6 { background-image: url('commerce.png'); }
+.target-7 { background-image: url('immobilier.png'); }
+.target-8 { background-image: url('bureau.jpg'); }
+
+.target-image {
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== Bloc Process intégré dans Matterport (V61 : ex-section autonome désormais sous-bloc Matterport)
+   Pattern photos carrées + numéro jaune + titre + description, calqué sur les timelines web/dooh ===== */
+.matterport-process {
+  margin: 100px auto 80px;
+  max-width: 1100px;
+}
+
+.matterport-process-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.matterport-process-header .section-eyebrow {
+  display: inline-block;
+}
+
+.matterport-process-header h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--graphite-deep);
+  margin-top: 12px;
+  line-height: 1.1;
+}
+
+.matterport-process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  position: relative;
+}
+
+/* Image carrée 1:1 en haut de chaque étape */
+.process-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  border: 1px solid rgba(46, 51, 54, 0.08);
+  box-shadow: 0 14px 32px -16px rgba(46, 51, 54, 0.18);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-step {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.process-step:hover .process-img {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 44px -16px rgba(46, 51, 54, 0.28);
+}
+
+.process-step:hover .process-img img {
+  transform: scale(1.06);
+}
+
+/* Ligne numéro + titre alignée verticalement (numéro jaune, titre graphite) */
+.process-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.process-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--yellow-deep, #D59518);
+}
+
+.process-step h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--graphite-deep);
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.process-step p {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--graphite-soft);
+  line-height: 1.55;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+/* ===== SECTION ZONE ===== */
+.zone-section {
+  padding: 100px 0;
+}
+
+.zone-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 64px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.zone-text h2 {
+  font-size: clamp(28px, 3vw, 38px);
+  margin-bottom: 20px;
+}
+
+.zone-text p {
+  color: var(--dark);
+  opacity: 0.8;
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.zone-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  margin-top: 24px;
+}
+
+.zone-info-icon {
+  width: 40px; height: 40px;
+  /* V69 : badge jaune signature FollowView3D (cohérent avec les badges .value-icon refondus en V60) */
+  background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite-deep);
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -4px rgba(232, 172, 55, 0.45);
+}
+
+.zone-info-text strong {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+
+.zone-info-text span {
+  color: var(--metal);
+  font-size: 14px;
+}
+
+.zone-map {
+  background: var(--cream);
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(160, 166, 164, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.france-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zone-map:hover .france-map-img {
+  transform: scale(1.03);
+}
+
+/* ===== SECTION CONTACT ===== */
+.contact-section {
+  background: var(--cream);
+  color: var(--dark);
+  padding: 120px 0;
+  border-radius: 40px 40px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.contact-section::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(46, 51, 54, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.contact-section .section-eyebrow {
+  color: var(--graphite);
+}
+
+/* V86 : logo signature centré tout en haut de la section Contact
+   Indépendant du contact-grid (qui aligne à gauche le contenu),
+   donne une signature visuelle premium à l'entrée de la section conversion */
+.contact-section-logo {
+  display: block;
+  height: 64px;
+  width: auto;
+  margin: 0 auto 56px;
+  filter: drop-shadow(0 4px 14px rgba(46, 51, 54, 0.10));
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== V86 : FAB téléphone flottant (mobile uniquement)
+   Bulle ronde flottante en bas-droite qui appelle directement le mobile au clic.
+   Couleurs : fond = jaune doré du logo + icône = gris-bleu (les 2 teintes du logo).
+   Caché par défaut, affiché uniquement en @media (max-width: 768px). ===== */
+.fab-phone {
+  /* Caché par défaut (desktop/tablette) — la fiche contact est déjà bien visible */
+  display: none;
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--metal);
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 8px 24px -4px rgba(232, 172, 55, 0.55), 0 2px 8px rgba(0, 0, 0, 0.18);
+  z-index: 998;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  /* Apparition douce au chargement avec léger délai pour ne pas être intrusif */
+  animation: fabPhoneAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
+  /* Évite le surlignage tap bleu sur mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fab-phone:active {
+  transform: scale(0.92);
+  box-shadow: 0 4px 12px -2px rgba(232, 172, 55, 0.55), 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Pulse léger toutes les 4s pour attirer l'attention sans être agressif */
+.fab-phone::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid var(--yellow);
+  opacity: 0;
+  animation: fabPhonePulse 2.8s ease-out 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes fabPhoneAppear {
+  from { transform: scale(0) rotate(-90deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes fabPhonePulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-info h2 {
+  font-size: clamp(30px, 3.5vw, 44px);
+  margin-bottom: 20px;
+  line-height: 1.1;
+  color: var(--black);
+}
+
+.contact-info > p {
+  color: var(--dark);
+  opacity: 0.8;
+  margin-bottom: 36px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--dark);
+  font-size: 15px;
+}
+
+.contact-icon {
+  width: 44px; height: 44px;
+  background: var(--white);
+  border: 1px solid rgba(46, 51, 54, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graphite);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(57, 61, 60, 0.05);
+}
+
+.contact-form {
+  background: var(--white);
+  border: 1px solid rgba(160, 166, 164, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 20px 60px -20px rgba(57, 61, 60, 0.12);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dark);
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--cream-light);
+  border: 1px solid rgba(160, 166, 164, 0.2);
+  border-radius: 12px;
+  color: var(--black);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--yellow);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(232, 172, 55, 0.15);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--metal);
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%232E3336' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-group select option { background: var(--white); color: var(--black); }
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-yellow);
+}
+
+.form-submit:hover {
+  background: #FFD250;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -10px rgba(232, 172, 55, 0.6);
+}
+
+/* V63 : Honeypot Netlify Forms — invisible pour les humains, piégeage des bots */
+.form-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* V63 : État du bouton pendant l'envoi (désactivé visuellement + petit spinner) */
+.form-submit[aria-busy="true"] {
+  opacity: 0.7;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.form-submit[aria-busy="true"] svg {
+  animation: formSubmitSpin 0.9s linear infinite;
+}
+
+@keyframes formSubmitSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* V63 : Message de feedback après envoi (succès ou erreur) */
+.form-feedback {
+  margin-top: 16px;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.5;
+  border-radius: 12px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease;
+}
+
+.form-feedback.is-visible {
+  opacity: 1;
+  max-height: 200px;
+  padding: 14px 18px;
+}
+
+.form-feedback.is-success {
+  background: rgba(232, 172, 55, 0.12);
+  border: 1px solid rgba(232, 172, 55, 0.4);
+  color: var(--graphite-deep);
+}
+
+.form-feedback.is-error {
+  background: rgba(220, 60, 60, 0.08);
+  border: 1px solid rgba(220, 60, 60, 0.3);
+  color: #B33A3A;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--cream);
+  color: var(--dark);
+  padding: 60px 0 32px;
+  border-top: 1px solid rgba(160, 166, 164, 0.18);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .logo { color: var(--black); margin-bottom: 16px; }
+.footer-brand p {
+  color: var(--metal-dark);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 320px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  background: var(--white);
+  border: 1px solid rgba(160, 166, 164, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(57, 61, 60, 0.04);
+}
+
+.social-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -6px rgba(57, 61, 60, 0.18);
+}
+
+/* Instagram : gradient officiel (jaune → orange → rose → violet) */
+.social-instagram {
+  color: #E1306C;
+}
+
+.social-instagram:hover {
+  background: linear-gradient(45deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+/* LinkedIn : bleu officiel #0A66C2 */
+.social-linkedin {
+  color: #0A66C2;
+}
+
+.social-linkedin:hover {
+  background: #0A66C2;
+  color: #FFFFFF;
+  border-color: #0A66C2;
+}
+
+/* Facebook : bleu officiel #1877F2 */
+.social-facebook {
+  color: #1877F2;
+}
+
+.social-facebook:hover {
+  background: #1877F2;
+  color: #FFFFFF;
+  border-color: #1877F2;
+}
+
+.footer h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 18px;
+  font-family: 'Sora', sans-serif;
+}
+
+.footer ul { list-style: none; }
+.footer ul li { margin-bottom: 10px; }
+.footer ul a {
+  color: var(--metal-dark);
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.footer ul a:hover { color: var(--graphite); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(160, 166, 164, 0.18);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--metal);
+  font-size: 13px;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-bottom-links a {
+  color: var(--metal);
+  transition: color 0.2s;
+}
+.footer-bottom-links a:hover { color: var(--graphite); }
+
+/* ===== ANIMATIONS ON SCROLL ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .targets-grid { grid-template-columns: repeat(3, 1fr); }
+  .matterport-process-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
+  .zone-card { grid-template-columns: 1fr; gap: 40px; padding: 48px 32px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  
+  /* Tablette : grille 1+2 simplifiée, 3D toujours en avant
+     V78 : suppression du padding-top V74 (logo passé en bas-droite) — config originale restaurée */
+  .expertises-grid { gap: 16px; }
+  .expertise-featured { min-height: 480px; }
+  .expertise-secondary { min-height: 240px; }
+  .expertise-featured .expertise-content { padding: 36px; }
+  .expertise-featured .expertise-content h3 { font-size: clamp(24px, 3vw, 30px); }
+  
+  /* Section Site internet sur tablette : stage padding réduit, timeline 2x2 */
+  .web-stage { padding: 40px 30px; }
+  .float-card { padding: 12px 14px; }
+  .float-card-text strong { font-size: 13px; }
+  .float-card-text span { font-size: 11px; }
+  .web-timeline-track { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .web-timeline-track::before { display: none; }
+  .dooh-timeline-track { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .dooh-timeline-track::before { display: none; }
+  
+  /* Section DOOH sur tablette : split garde 2 colonnes mais gap réduit, stats plus compactes */
+  .dooh-split { gap: 50px; }
+  .dooh-stats { gap: 30px; }
+  .dooh-stat-num { font-size: clamp(48px, 7vw, 70px); }
+  .dooh-stat-text { font-size: 15px; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  
+  /* Nav mobile : hauteur adaptée au logo réduit V87
+     Calcul : logo 44px + cadre blanc 12px (padding 6+6) + marges nav = 80px confortables */
+  .nav-inner {
+    padding: 12px 18px;
+    min-height: 80px;
+  }
+  .nav.scrolled .nav-inner {
+    min-height: 70px;
+  }
+  
+  /* Logo mobile : plus grand pour l'identification immédiate, dans la nav uniquement */
+  .nav .logo {
+    gap: 10px;
+    font-size: 17px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 14px;
+    /* limite la largeur pour empêcher tout débordement à côté du burger */
+    max-width: calc(100vw - 90px);
+    overflow: hidden;
+  }
+  
+  .nav .logo-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    padding: 3px;
+  }
+  
+  .nav.scrolled .logo-icon {
+    width: 46px;
+    height: 46px;
+  }
+  
+  /* Logo complet (V70) sur mobile : hauteur réduite pour rester proportionné
+     V71 : non-scrolled agrandi pour effet d'arrivée premium
+     V87 : logo réduit de 56 → 44px car il débordait visuellement de la nav top sur mobile
+     (la nav non-scrolled a un fond transparent, donc pas de "bande" qui contient le logo) */
+  .nav .logo-full {
+    padding: 6px 12px;
+    border-radius: 12px;
+  }
+  .nav .logo-full img {
+    height: 44px;
+  }
+  .nav.scrolled .logo-full img {
+    height: 34px;
+  }
+  .footer-brand .logo-full img {
+    height: 44px;
+  }
+  
+  .nav-links { display: none; }
+  .nav-links.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--white);
+    padding: 24px 20px;
+    gap: 18px;
+    box-shadow: var(--shadow-soft);
+    /* V93 : tous les éléments centrés (cohérence visuelle "Services", "Cibles",
+       "Demander un devis" + les triggers Démo/Étapes) */
+    align-items: center;
+  }
+  .nav-links.mobile-open a { color: var(--dark); }
+  .menu-toggle { display: flex; }
+
+  /* V88/V93 : dropdowns en mobile — affichage compact, fond blanc, items en colonne
+     Le menu hamburger ouvre tout le bloc, et les dropdowns Démo/Étapes s'affichent en accordéon */
+  .nav-dropdown {
+    width: 100%;
+    /* V93 : centre le bouton trigger dans la colonne flex */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .nav-dropdown-trigger {
+    /* V93 : trigger centré (label + chevron côte à côte au milieu, pas espacés sur toute la largeur) */
+    width: auto;
+    justify-content: center;
+    color: var(--dark);
+    padding: 4px 0;
+  }
+  .nav-dropdown-menu {
+    position: static;
+    transform: none !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    min-width: 0;
+    /* V93 : largeur 100% du parent .nav-dropdown (= largeur de la nav-links visible),
+       et pas left: 50% qui causait le décalage négatif vers la gauche */
+    width: 100%;
+    left: auto;
+    right: auto;
+    background: rgba(46, 51, 54, 0.04);
+    box-shadow: none;
+    border: none;
+    margin-top: 10px;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    transition: max-height 0.3s ease, padding 0.3s ease, margin-top 0.3s ease;
+  }
+  .nav-dropdown-menu::before { display: none; }
+  .nav-dropdown[data-open="true"] .nav-dropdown-menu {
+    max-height: 400px;
+    padding: 8px;
+  }
+  .nav-dropdown-menu a {
+    /* V93 : items du dropdown ouverts gardent le layout grille (numéro à gauche + label/desc),
+       mais alignés à gauche dans le panneau gris (pas centrés — on veut voir la liste) */
+    grid-template-columns: auto 1fr;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .nav-dropdown-num {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .nav-dropdown-label { font-size: 13.5px; }
+  .nav-dropdown-desc { font-size: 11.5px; }
+  
+  /* Hero principal mobile : layout split — image entière en haut, contenu en bas */
+  .hero-main { 
+    min-height: auto;
+    padding: 0;
+    padding-top: 76px; /* compense la hauteur de la nav fixe */
+    display: flex;
+    flex-direction: column;
+    background: var(--graphite-deep);
+  }
+  
+  /* Le bloc média prend une portion fixe en haut, image entière sans rognage */
+  .hero-main .hero-media {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  
+  .hero-main .hero-media img,
+  .hero-main .hero-main-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center right;
+    transform: none;
+    animation: kenBurnsMobile 22s ease-in-out infinite alternate;
+  }
+  
+  @keyframes kenBurnsMobile {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+  
+  /* Overlay : juste un dégradé en bas de l'image pour la transition douce vers le bloc contenu */
+  .hero-main .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 55%, rgba(17, 17, 17, 0.4) 80%, rgba(17, 17, 17, 0.95) 100%);
+  }
+  
+  .hero-main .hero-overlay::before,
+  .hero-main .hero-overlay::after {
+    display: none;
+  }
+  
+  /* Le contenu se place en bas, sur fond graphite-deep */
+  .hero-main .hero-content {
+    position: relative;
+    padding: 32px 22px 44px;
+    background: var(--graphite-deep);
+    margin-top: -1px; /* évite tout joint visible entre image et contenu */
+  }
+  
+  .hero-main h1 { 
+    font-size: clamp(24px, 6.5vw, 32px);
+    margin-bottom: 18px;
+    line-height: 1.2;
+  }
+  
+  .hero-main .hero-subtitle { 
+    font-size: 14px; 
+    margin-bottom: 28px;
+    line-height: 1.55;
+    max-width: 100%;
+  }
+  
+  .hero-main .hero-buttons { 
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 12px;
+  }
+  
+  .hero-main .btn { 
+    justify-content: center; 
+    padding: 15px 24px;
+  }
+  
+  .hero-main .hero-eyebrow { 
+    font-size: 11px; 
+    padding: 7px 14px; 
+    margin-bottom: 22px;
+  }
+  
+  /* Scroll indicator : caché sur mobile car le layout split est déjà explicite */
+  .hero-main .hero-scroll {
+    display: none;
+  }
+  
+  /* Section expertises : 1 colonne, cartes empilées */
+  .expertises-section { padding: 70px 0; }
+  .expertises-header { margin-bottom: 40px; }
+  .expertises-header h2 { font-size: clamp(24px, 7vw, 34px); }
+  
+  .expertises-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 14px;
+    padding: 0 4px;
+  }
+  
+  .expertise-featured,
+  .expertise-secondary {
+    grid-row: auto;
+    min-height: 320px;
+  }
+  
+  .expertise-featured { min-height: 380px; }
+  
+  .expertise-content { padding: 24px; }
+  .expertise-featured .expertise-content { padding: 28px; }
+  
+  .expertise-content h3 { font-size: 20px; }
+  .expertise-featured .expertise-content h3 { font-size: 24px; }
+  
+  .expertise-content p { font-size: 13px; margin-bottom: 16px; }
+  
+  .expertise-index {
+    top: 18px;
+    right: 22px;
+    font-size: 11px;
+  }
+  
+  /* Logo cartes mobile (V78 : icône seule en bas-droite, taille réduite ; V81 : bottom augmenté) */
+  .expertise-logo {
+    bottom: 24px;
+    right: 22px;
+    top: auto;
+    left: auto;
+    width: 36px;
+    height: auto;
+  }
+  .expertise-featured .expertise-logo {
+    bottom: 28px;
+    right: 26px;
+    top: auto;
+    left: auto;
+    width: 44px;
+    height: auto;
+  }
+  
+  .expertise-badge { font-size: 10px; padding: 5px 12px; margin-bottom: 12px; }
+  
+  .section { padding: 70px 0; }
+  .section-header { margin-bottom: 48px; }
+  .section h2 { font-size: clamp(26px, 7vw, 36px); }
+  
+  .value-grid { grid-template-columns: 1fr; gap: 20px; }
+  .value-img { aspect-ratio: 16 / 9; }
+  .value-icon {
+    width: 42px;
+    height: 42px;
+    bottom: 12px;
+    left: 12px;
+    border-radius: 12px;
+  }
+  .value-text { padding: 22px 22px 26px; }
+  .value-card h3 { font-size: 20px; }
+  .value-card p { font-size: 14.5px; }
+  .targets-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .target-card { aspect-ratio: 4 / 5; }
+  
+  /* Démo Matterport intégrée sur mobile */
+  .matterport-demo { margin-bottom: 50px; }
+  .matterport-demo-label { font-size: 10px; padding: 6px 12px; }
+  .matterport-demo-frame { border-radius: 16px; }
+  
+  /* Onglets démo Matterport sur mobile : carrousel horizontal scrollable */
+  .matterport-tabs {
+    gap: 6px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 16px 4px;
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+  .matterport-tabs::-webkit-scrollbar { display: none; }
+  
+  .mp-tab {
+    font-size: 13px;
+    padding: 8px 16px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+  
+  .mp-tab.is-active {
+    padding-left: 22px;
+  }
+  
+  .mp-tab.is-active::before {
+    left: 9px;
+    width: 5px;
+    height: 5px;
+  }
+  
+  /* Section Site internet sur mobile : 1 colonne, plus compact */
+  
+  /* Section Matterport sur mobile : 1 colonne, visuel réduit, cartes empilées */
+  .matterport-section { padding: 70px 0 80px; }
+  .matterport-header { margin-bottom: 50px; }
+  .matterport-header h2 { font-size: clamp(24px, 7vw, 32px); }
+  /* V90 : sous-titres mobile — espacement et taille adaptés aux 3 paragraphes pédagogique */
+  .matterport-subtitle { font-size: 14.5px; line-height: 1.65; }
+  .matterport-subtitle + .matterport-subtitle { margin-top: 14px; }
+  .matterport-eyebrow { font-size: 11px; margin-bottom: 16px; }
+  
+  /* Override mobile : conserver la taille hero (titre de section) malgré la règle ci-dessus */
+  .matterport-eyebrow.section-eyebrow--hero,
+  .section-eyebrow--hero {
+    font-size: clamp(18px, 5.5vw, 24px);
+    margin-bottom: 16px;
+  }
+  
+  /* V76 : logo signature des 3 sections — taille réduite sur mobile */
+  .section-hero-logo {
+    height: 44px;
+    margin-bottom: 18px;
+  }
+  
+  /* Démo Matterport intégrée sur mobile */
+  .matterport-demo { margin-bottom: 50px; }
+  .matterport-demo-label { font-size: 10px; padding: 6px 12px; }
+  .matterport-demo-frame { border-radius: 16px; }
+  
+  /* Cartes Matterport sur mobile : passage en vertical (image haut, texte bas) */
+  .mp-card {
+    flex-direction: column;
+  }
+  
+  .mp-card-img {
+    width: 100%;
+    aspect-ratio: 16 / 10;  /* paysage pour limiter la hauteur sur mobile */
+  }
+  
+  .mp-card-text {
+    padding: 20px 22px 24px;
+    gap: 8px;
+  }
+  
+  .mp-card-num {
+    font-size: 11px;
+  }
+  
+  .mp-card-title {
+    font-size: 17px;
+  }
+  
+  .mp-card-desc {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  /* Intro et conclusion sur mobile */
+  .matterport-cards-intro {
+    font-size: 15px;
+    margin-bottom: 24px;
+    padding: 0 8px;
+  }
+  
+  .web-section { padding: 80px 0 70px; }
+  .web-hero { margin-bottom: 50px; }
+  .web-hero h2 { font-size: clamp(28px, 8vw, 38px); }
+  .web-hero-subtitle { font-size: 15px; line-height: 1.65; }
+  .web-hero-subtitle + .web-hero-subtitle { margin-top: 14px; }
+  
+  /* ===== Stage mobile : float du mockup + carrousel horizontal des bénéfices ===== */
+  .web-stage { 
+    padding: 30px 0; 
+    margin-bottom: 70px; 
+  }
+  
+  /* Animation du mockup plus subtile sur mobile (-5px au lieu de -10px) */
+  @keyframes stageFloatMobile {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+  }
+  .web-stage-image { 
+    animation: stageFloatMobile 5s ease-in-out infinite alternate;
+  }
+  
+  /* Stage devient un conteneur vertical : mockup en haut, carrousel en bas */
+  .web-stage-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+  }
+  
+  /* Carrousel horizontal scrollable avec scroll-snap (iOS-natif, swipe au doigt) */
+  .float-cards-track {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 20px;
+    padding: 8px 20px 16px;
+    margin: 0 -20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .float-cards-track::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Cartes flottantes en mode carrousel : reset de l'absolute desktop, plein du contrôle au scroll-snap */
+  .float-card { 
+    display: flex;
+    position: relative;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    width: calc(85vw - 40px);
+    max-width: 300px;
+    padding: 18px 20px;
+    gap: 14px;
+  }
+  
+  .float-card-icon {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .float-card-text strong {
+    font-size: 15px;
+  }
+  
+  .float-card-text span {
+    font-size: 12.5px;
+  }
+  
+  /* Timeline mobile : 2 colonnes au lieu de 4 */
+  .web-timeline { margin-bottom: 70px; }
+  .web-timeline-header { margin-bottom: 36px; }
+  .web-timeline-header h3 { font-size: clamp(22px, 6.5vw, 30px); }
+  .web-timeline-track { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+  }
+  .web-timeline-track::before { display: none; }
+  .web-tl-img { border-radius: 14px; margin-bottom: 12px; }
+  .web-tl-num { font-size: 11px; }
+  .web-tl-label { font-size: 14px; }
+
+  /* Timeline DOOH mobile : mêmes règles que web pour cohérence */
+  .dooh-timeline { margin: 60px auto 50px; }
+  .dooh-timeline-header { margin-bottom: 36px; }
+  .dooh-timeline-header h3 { font-size: clamp(22px, 6.5vw, 30px); }
+  .dooh-timeline-track { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+  }
+  .dooh-timeline-track::before { display: none; }
+  .dooh-tl-img { border-radius: 14px; margin-bottom: 12px; }
+  .dooh-tl-num { font-size: 11px; }
+  .dooh-tl-label { font-size: 14px; }
+  
+  /* CTA final mobile (mutualisé V58 : Matterport / Site internet / DOOH) */
+  .cta-final { padding: 50px 26px 40px; border-radius: 24px; }
+  .cta-final h3 { font-size: clamp(22px, 6vw, 30px); }
+  .cta-final > p { font-size: 14px; margin-bottom: 26px; }
+  .cta-final .cta-buttons { flex-direction: column; gap: 10px; width: 100%; }
+  .cta-final .cta-buttons .btn,
+  .cta-final .cta-buttons .btn-ghost { 
+    width: 100%; 
+    justify-content: center; 
+  }
+  .cta-includes-line { 
+    margin-top: 26px; 
+    font-size: 11.5px; 
+    gap: 6px 22px; 
+  }
+  .cta-includes-line li:not(:first-child)::before { left: -12px; }
+  
+  /* Section DOOH sur mobile */
+  .dooh-section { padding: 80px 0 70px; }
+  .dooh-hero { margin-bottom: 50px; }
+  .dooh-hero h2 { font-size: clamp(28px, 8vw, 38px); }
+  .dooh-hero-subtitle { font-size: 15px; line-height: 1.65; }
+  .dooh-hero-subtitle + .dooh-hero-subtitle { margin-top: 14px; }
+  
+  /* Split passe en colonne unique : image en premier, stats empilées en dessous */
+  .dooh-split { 
+    grid-template-columns: 1fr; 
+    gap: 50px; 
+    margin-bottom: 70px; 
+  }
+  .dooh-split-image .dooh-slides { border-radius: 20px; }
+  .dooh-split-image .dooh-dots { bottom: -22px; }
+  .dooh-split-image .dooh-dot { width: 22px; height: 3px; }
+  
+  .dooh-stats { gap: 32px; }
+  .dooh-stat { padding-top: 20px; }
+  .dooh-stat::before { width: 50px; }
+  .dooh-stat-num { font-size: clamp(48px, 14vw, 64px); }
+  .dooh-stat-text { font-size: 14.5px; }
+  
+  /* CTA final DOOH mobile : géré par les règles mutualisées .cta-final ci-dessus */
+  
+  /* Bloc Process Matterport mobile (V61, V78 : passé à 2 colonnes pour cohérence
+     avec les timelines Site Internet et Écrans Dynamiques qui sont 2x2 sur mobile) */
+  .matterport-process { margin: 60px auto 50px; }
+  .matterport-process-header { margin-bottom: 36px; }
+  .matterport-process-header h3 { font-size: clamp(22px, 6.5vw, 30px); }
+  .matterport-process-grid { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+  .process-img { max-width: 100%; margin: 0 auto 14px; border-radius: 14px; }
+  .process-step h3 { font-size: 15px; }
+  .process-step p { font-size: 13px; line-height: 1.45; }
+  
+  .zone-card { padding: 36px 24px; }
+  
+  .contact-section { padding: 80px 0; border-radius: 28px 28px 0 0; }
+  .contact-section-logo { height: 48px; margin-bottom: 36px; }
+  .contact-form { padding: 28px 24px; }
+
+  /* V86 : FAB téléphone visible uniquement sur mobile */
+  .fab-phone { display: inline-flex; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 32px; }
+  .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+  .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .targets-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo logo-full">
+      <img src="logo-full.png" alt="FollowView3D" />
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#expertises">Services</a>
+
+      <!-- V88 : Démo devient un dropdown avec 3 options (Matterport / Site Internet / DOOH)
+           Au hover (desktop) ou click (mobile), un panneau s'ouvre avec les 3 destinations -->
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+          Démo
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg>
+        </button>
+        <div class="nav-dropdown-menu" role="menu" aria-label="Choisir une démo">
+          <a href="#demo" role="menuitem">
+            <span class="nav-dropdown-num">01</span>
+            <span class="nav-dropdown-label">Visite 3D</span>
+            <span class="nav-dropdown-desc">Démo Matterport interactive</span>
+          </a>
+          <a href="#site-exemple" role="menuitem">
+            <span class="nav-dropdown-num">02</span>
+            <span class="nav-dropdown-label">Site internet</span>
+            <span class="nav-dropdown-desc">Mini-site Maison Aurea</span>
+          </a>
+          <a href="#dooh" role="menuitem">
+            <span class="nav-dropdown-num">03</span>
+            <span class="nav-dropdown-label">Écrans dynamiques</span>
+            <span class="nav-dropdown-desc">Carrousel exemples DOOH</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="#cibles">Cibles</a>
+
+      <!-- V88 : Process renommé "Étapes" + dropdown avec les 3 timelines des sections -->
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+          Étapes
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg>
+        </button>
+        <div class="nav-dropdown-menu" role="menu" aria-label="Voir les étapes">
+          <a href="#process" role="menuitem">
+            <span class="nav-dropdown-num">01</span>
+            <span class="nav-dropdown-label">Visite 3D</span>
+            <span class="nav-dropdown-desc">Du scan à la mise en ligne</span>
+          </a>
+          <a href="#web-timeline" role="menuitem">
+            <span class="nav-dropdown-num">02</span>
+            <span class="nav-dropdown-label">Site internet</span>
+            <span class="nav-dropdown-desc">De l'idée au site en ligne</span>
+          </a>
+          <a href="#dooh-timeline" role="menuitem">
+            <span class="nav-dropdown-num">03</span>
+            <span class="nav-dropdown-label">Écrans dynamiques</span>
+            <span class="nav-dropdown-desc">De l'idée à la diffusion</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="#contact" class="nav-cta">Demander un devis</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO PRINCIPAL COMPACT ===== -->
+<section class="hero-main">
+  <div class="hero-media">
+    <img src="hero-main.png" alt="FollowView3D — Expériences digitales immersives à 360°" class="hero-main-image" />
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-inner">
+      <h1>
+        Transformez votre établissement<br>en <span class="accent">expérience digitale immersive.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Visites virtuelles 3D, sites vitrines intégrés et écrans dynamiques pour valoriser vos espaces et convertir vos visiteurs.
+      </p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary">
+          Demander un devis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#expertises" class="btn btn-secondary">
+          Voir les solutions
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Découvrir</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3 EXPERTISES ===== -->
+<section class="expertises-section" id="expertises">
+  <div class="container">
+    <div class="expertises-header fade-in">
+      <span class="section-eyebrow section-eyebrow--underlined">Nos expertises</span>
+      <h2>3 solutions complémentaires pour votre établissement.</h2>
+    </div>
+
+    <div class="expertises-grid">
+
+      <!-- CARTE PRINCIPALE : VISITE 3D (plus grande, plus mise en avant) -->
+      <article class="expertise-card expertise-featured fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="visite3d-card.mp4" type="video/mp4">
+          </video>
+          <img src="hero.png" alt="" class="expertise-fallback" />
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">01</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Visite 3D immersive</span>
+          <h3>Votre établissement, visitable à 360°.</h3>
+          <p>Offrez à vos clients une exploration immersive de vos espaces, directement depuis votre site internet ou un simple lien.</p>
+          <a href="#matterport" class="expertise-cta">
+            <span>Découvrir</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <!-- Logo FollowView3D en bas-droite (V81 : placé en dernier dans le DOM
+             pour garantir le bon positionnement absolu sans interaction avec le flex flow) -->
+        <img class="expertise-logo" src="logo-icon.png" alt="FollowView3D" aria-hidden="true" />
+      </article>
+
+      <!-- CARTE SECONDAIRE : SITE INTERNET -->
+      <article class="expertise-card expertise-secondary fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="hero-web.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">02</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Site internet</span>
+          <h3>Un site conçu autour de votre visite 3D.</h3>
+          <p>Présentez votre établissement avec un site moderne, premium et pensé pour convertir.</p>
+          <a href="#site-internet" class="expertise-cta">
+            <span>Voir l'offre</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <img class="expertise-logo" src="logo-icon.png" alt="FollowView3D" aria-hidden="true" />
+      </article>
+
+      <!-- CARTE SECONDAIRE : DOOH -->
+      <article class="expertise-card expertise-secondary fade-in">
+        <div class="expertise-media">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="hero-dooh.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="expertise-overlay"></div>
+        <div class="expertise-index">03</div>
+        <div class="expertise-content">
+          <span class="expertise-badge">Écrans dynamiques</span>
+          <h3>Vos écrans deviennent une vitrine digitale.</h3>
+          <p>Diffusez vos contenus, visites et messages sur des écrans professionnels en point de vente.</p>
+          <a href="#dooh" class="expertise-cta">
+            <span>Explorer</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <img class="expertise-logo" src="logo-icon.png" alt="FollowView3D" aria-hidden="true" />
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION MATTERPORT (premium dark, identité Matterport, démo intégrée) ===== -->
+<section class="matterport-section" id="matterport">
+  <!-- Décor d'ambiance discret -->
+  <div class="matterport-grid-bg" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="matterport-header fade-in">
+      <img class="section-hero-logo" src="logo-full.png" alt="FollowView3D" />
+      <span class="matterport-eyebrow section-eyebrow--hero">— La technologie Matterport</span>
+      <h2><span class="matterport-accent-red">La visite 3D immersive professionnelle.</span></h2>
+      <p class="matterport-subtitle">
+        La technologie Matterport scanne votre établissement pour en créer un <strong>jumeau numérique 3D ultra-réaliste</strong>, accessible 24/7 depuis n'importe quel navigateur — sans téléchargement, sans application. Vos visiteurs explorent librement chaque pièce, comme s'ils y étaient, avec une qualité d'image professionnelle 4K.
+      </p>
+      <p class="matterport-subtitle">
+        Les visites virtuelles <strong>réduisent de 30% les visites physiques inutiles</strong>, accélèrent la prise de décision et rassurent vos prospects à distance. Plan d'étage généré automatiquement, mesures précises, intégration web facile : la solution la plus aboutie pour valoriser un espace.
+      </p>
+      <p class="matterport-subtitle">
+        Que vous soyez hôtelier, agent immobilier, restaurateur ou gestionnaire d'espace, <strong>Matterport transforme une simple visite en expérience mémorable</strong> — et fait grimper votre taux de conversion.
+      </p>
+    </div>
+
+    <!-- Démo immersive : iframe Matterport avec onglets de sélection par type d'établissement -->
+    <div class="matterport-demo fade-in" id="demo">
+      <div class="matterport-demo-label">
+        <span class="matterport-demo-dot"></span>
+        Démos interactives Matterport
+      </div>
+
+      <!-- Onglets de sélection -->
+      <div class="matterport-tabs" role="tablist" aria-label="Choisir un type d'établissement">
+        <button class="mp-tab is-active" type="button" role="tab" aria-selected="true"
+                data-mp-id="mK5j755ZETQ"
+                data-mp-label="Hôtel">
+          Hôtel
+        </button>
+        <button class="mp-tab" type="button" role="tab" aria-selected="false"
+                data-mp-id="p27fTTg2EFf"
+                data-mp-label="Salon de coiffure">
+          Salon de coiffure
+        </button>
+        <button class="mp-tab" type="button" role="tab" aria-selected="false"
+                data-mp-id="x7Jf4r67KCv"
+                data-mp-label="Appartement">
+          Appartement
+        </button>
+        <button class="mp-tab" type="button" role="tab" aria-selected="false"
+                data-mp-id="Hm58QkofthK"
+                data-mp-label="Galerie">
+          Galerie
+        </button>
+      </div>
+
+      <!-- Iframe (l'URL change dynamiquement selon l'onglet sélectionné) -->
+      <div class="matterport-demo-frame">
+        <iframe
+          id="mp-demo-iframe"
+          src="https://my.matterport.com/show/?ref=em&m=mK5j755ZETQ&lang=fr&play=1"
+          frameborder="0"
+          allowfullscreen
+          allow="xr-spatial-tracking; fullscreen; accelerometer; gyroscope; magnetometer"
+          loading="lazy"
+          tabindex="-1"
+          title="Démo Matterport — Visite virtuelle d'un Hôtel"></iframe>
+      </div>
+    </div>
+
+    <div class="matterport-grid">
+      <!-- Phrase d'intro -->
+      <p class="matterport-cards-intro fade-in">Voici quelques avantages concrets de cette solution :</p>
+
+      <!-- 6 cartes horizontales avec grandes images -->
+      <div class="matterport-cards">
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <!-- Vidéo loop muette (replace l'image statique pour montrer la fluidité de la visite immersive) -->
+            <video
+              src="matterport-01-immersive.mp4"
+              poster="matterport-01-immersive-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              aria-hidden="true"></video>
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">01</span>
+            <h3 class="mp-card-title">Visite immersive à 360°</h3>
+            <p class="mp-card-desc">Explorez les lieux comme si vous y étiez, depuis un ordinateur, smartphone ou tablette.</p>
+          </div>
+        </article>
+
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <!-- Vidéo loop muette (replace l'image statique pour montrer le plan d'étage Dollhouse en mouvement) -->
+            <video
+              src="matterport-02-dollhouse.mp4"
+              poster="matterport-02-dollhouse-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              aria-hidden="true"></video>
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">02</span>
+            <h3 class="mp-card-title">Plan d'étage interactif</h3>
+            <p class="mp-card-desc">Accédez à un plan en 3D (Dollhouse), facile à consulter et à partager, pour mieux visualiser l'agencement des espaces.</p>
+          </div>
+        </article>
+
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <!-- Vidéo loop muette (replace l'image statique pour montrer la navigation fluide dans la visite 3D) -->
+            <video
+              src="matterport-03-navigation.mp4"
+              poster="matterport-03-navigation-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              aria-hidden="true"></video>
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">03</span>
+            <h3 class="mp-card-title">Navigation fluide</h3>
+            <p class="mp-card-desc">Personnalisez les points d'intérêt avec des annotations — photos, textes ou vidéos — pour rendre l'expérience encore plus interactive et informative.</p>
+          </div>
+        </article>
+
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <img src="matterport-04-distance.jpg" alt="" aria-hidden="true" loading="lazy" />
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">04</span>
+            <h3 class="mp-card-title">Accessibilité à distance</h3>
+            <p class="mp-card-desc">Vos clients peuvent visiter les lieux où qu'ils soient, à tout moment, ouvrant des perspectives considérables pour vos projets à distance.</p>
+          </div>
+        </article>
+
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <!-- Vidéo loop muette (replace l'image statique pour montrer l'outil de mesure Matterport en action) -->
+            <video
+              src="matterport-05-mesures.mp4"
+              poster="matterport-05-mesures-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              aria-hidden="true"></video>
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">05</span>
+            <h3 class="mp-card-title">Mesures précises</h3>
+            <p class="mp-card-desc">Prenez des mesures directement dans la visite, sans vous déplacer, avec une précision d'1 % de marge d'erreur.</p>
+          </div>
+        </article>
+
+        <article class="mp-card fade-in">
+          <div class="mp-card-img">
+            <img src="matterport-06-plan-masse.jpg" alt="" aria-hidden="true" loading="lazy" />
+          </div>
+          <div class="mp-card-text">
+            <span class="mp-card-num">06</span>
+            <h3 class="mp-card-title">Plan de masse</h3>
+            <p class="mp-card-desc">Visualisez chaque étage sur un plan de masse pour vos besoins d'agencement.</p>
+          </div>
+        </article>
+      
+      </div>
+
+      <!-- Bloc 4 étapes du process Matterport (V61 : intégré dans la section Matterport
+           pour symétrie parfaite avec les timelines des sections Site internet et Écrans dynamiques.
+           L'id #process est conservé ici pour que les liens du menu/footer fonctionnent toujours) -->
+      <div class="matterport-process fade-in" id="process">
+        <div class="matterport-process-header">
+          <span class="section-eyebrow section-eyebrow--underlined">Process</span>
+          <h3>Du scan à la mise en ligne.</h3>
+        </div>
+        <div class="matterport-process-grid">
+          <!-- Étape 1 : Échange -->
+          <div class="process-step">
+            <div class="process-img"><img src="process-01-echange.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+            <div class="process-meta">
+              <span class="process-num">01</span>
+              <h3>Échange</h3>
+            </div>
+            <p>Brief & devis sous 48h.</p>
+          </div>
+          <!-- Étape 2 : Prise de vue -->
+          <div class="process-step">
+            <div class="process-img"><img src="process-02-prise-de-vue.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+            <div class="process-meta">
+              <span class="process-num">02</span>
+              <h3>Prise de vue</h3>
+            </div>
+            <p>Captation 3D Matterport sur site.</p>
+          </div>
+          <!-- Étape 3 : Traitement -->
+          <div class="process-step">
+            <div class="process-img"><img src="process-03-traitement.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+            <div class="process-meta">
+              <span class="process-num">03</span>
+              <h3>Traitement</h3>
+            </div>
+            <p>Post-production & optimisation.</p>
+          </div>
+          <!-- Étape 4 : Mise en ligne -->
+          <div class="process-step">
+            <div class="process-img"><img src="process-04-mise-en-ligne.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+            <div class="process-meta">
+              <span class="process-num">04</span>
+              <h3>Mise en ligne</h3>
+            </div>
+            <p>Site internet, supports digitaux, partage par lien.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA final Matterport (ajouté V58 : symétrie avec les CTA Site internet et DOOH) -->
+      <div class="cta-final fade-in">
+        <h3>Votre établissement accessible en 3D de n'importe où ?</h3>
+        <p>Devis personnalisé sous 48h, sans engagement.</p>
+        <div class="cta-buttons">
+          <a href="#contact" class="btn btn-primary" data-preselect-service="visite-3d">
+            Demander un scan Matterport
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#demo" class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 2L11 7L3 12V2Z"/></svg>
+            Voir une démo
+          </a>
+        </div>
+        <ul class="cta-includes-line" aria-label="Tout est inclus">
+          <li>Captation Matterport 4K</li>
+          <li>Plan 3D Dollhouse</li>
+          <li>Mesures précises</li>
+          <li>Hébergement inclus</li>
+          <li>Lien partageable</li>
+          <li>Intégration web</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION SITE INTERNET (refonte minimaliste Apple-like V31) ===== -->
+<section class="web-section" id="site-internet">
+  <div class="web-bg-decor"></div>
+
+  <div class="container">
+
+    <!-- Bloc 1 : Hero épuré -->
+    <div class="web-hero fade-in">
+      <img class="section-hero-logo" src="logo-full.png" alt="FollowView3D" />
+      <span class="section-eyebrow section-eyebrow--hero">Site internet</span>
+      <h2>Un site conçu autour de <span class="web-accent">votre visite 3D.</span></h2>
+      <p class="web-hero-subtitle">
+        Un site internet moderne, <strong>sur mesure et 100% responsive</strong>, conçu autour de votre visite virtuelle Matterport pour en faire <strong>le cœur de l'expérience visiteur</strong>. Design premium, navigation fluide, performances optimales : chaque détail est pensé pour valoriser votre établissement et convertir vos prospects.
+      </p>
+      <p class="web-hero-subtitle">
+        Hébergement inclus 12 mois, intégration native de la visite 3D, formulaire de contact, galerie photos, optimisation mobile et SEO : <strong>tout est livré clé en main</strong>, sans abonnement caché.
+      </p>
+      <p class="web-hero-subtitle">
+        Au-delà de l'esthétique, un site bien pensé <strong>booste votre référencement Google</strong> et inspire confiance dès la première seconde. Idéal pour les hôtels, restaurants et commerces premium qui veulent se démarquer dans un marché saturé.
+      </p>
+    </div>
+
+    <!-- Bloc 2 : Mockup monumental avec cartes flottantes (carrousel sur mobile) -->
+    <div class="web-stage fade-in" id="site-exemple">
+      <div class="web-stage-glow" aria-hidden="true"></div>
+      <div class="web-stage-inner">
+        <!-- Mockup vivant : image vide + overlay laptop (3 phases animées) + overlay iPhone (capture statique) -->
+        <div class="web-stage-screen">
+          <img src="web-mockup-blank.png" alt="MacBook et iPhone affichant un site FollowView3D" class="web-stage-image" />
+
+          <!-- Overlay LAPTOP : 3 phases qui s'enchaînent en boucle -->
+          <!-- LAPTOP : mini-site Maison Aurea Hôtel & Spa interactif (3 pages cliquables)
+               Identité Maison Aurea : palette dorée/champagne + serif premium + monogramme M -->
+          <div class="laptop-screen" data-active-page="accueil">
+            <!-- Nav supérieure cliquable -->
+            <nav class="mini-nav">
+              <div class="mini-nav-brand">
+                <span class="mini-nav-brand-mark">M</span>
+                <span class="mini-nav-brand-name">Maison Aurea</span>
+              </div>
+              <div class="mini-nav-links">
+                <button class="mini-nav-link is-active" data-page="accueil">Hébergement</button>
+                <button class="mini-nav-link" data-page="visite">Visite</button>
+                <button class="mini-nav-link" data-page="reserver">Réserver</button>
+              </div>
+            </nav>
+
+            <!-- Pages du mini-site -->
+            <div class="mini-pages">
+              <!-- Page Accueil -->
+              <div class="mini-page mini-page-accueil is-active">
+                <div class="mini-hero-img">
+                  <span class="mini-hero-badge">★ 5 étoiles · Vue lac</span>
+                </div>
+                <div class="mini-hero-content">
+                  <span class="mini-hero-eyebrow">Hôtel & Spa</span>
+                  <h4 class="mini-hero-title">Luxe intemporel,<br>séjours inoubliables.</h4>
+                  <p class="mini-hero-desc">Un sanctuaire d'élégance et de sérénité, face aux paysages les plus saisissants.</p>
+                  <button class="mini-cta mini-cta-primary" data-page="visite">
+                    Découvrir Maison Aurea
+                  </button>
+                </div>
+              </div>
+
+              <!-- Page Visite (iframe Matterport, conservée à l'identique) -->
+              <div class="mini-page mini-page-visite">
+                <iframe
+                  src="https://my.matterport.com/show/?ref=em&m=mK5j755ZETQ&lang=fr&play=1&qs=1&hr=0&brand=0&help=0&dh=0&hl=2&search=0&title=0"
+                  frameborder="0"
+                  allowfullscreen
+                  allow="xr-spatial-tracking; fullscreen; accelerometer; gyroscope"
+                  loading="lazy"
+                  tabindex="-1"
+                  title="Visite virtuelle Matterport"
+                  class="mini-visite-iframe"></iframe>
+                <div class="mini-visite-live">
+                  <span class="mini-visite-live-dot"></span>
+                  LIVE
+                </div>
+              </div>
+
+              <!-- Page Réserver -->
+              <div class="mini-page mini-page-reserver">
+                <div class="mini-reserve-content">
+                  <span class="mini-reserve-eyebrow">★★★★★ &nbsp;·&nbsp; 4.9/5 (847 avis)</span>
+                  <h4 class="mini-reserve-title">Réservez votre séjour</h4>
+                  <div class="mini-reserve-form">
+                    <div class="mini-reserve-row">
+                      <div class="mini-reserve-field">
+                        <span class="mini-reserve-label">Arrivée</span>
+                        <span class="mini-reserve-value">28 mai</span>
+                      </div>
+                      <div class="mini-reserve-field">
+                        <span class="mini-reserve-label">Départ</span>
+                        <span class="mini-reserve-value">30 mai</span>
+                      </div>
+                    </div>
+                    <div class="mini-reserve-row">
+                      <div class="mini-reserve-field mini-reserve-field-full">
+                        <span class="mini-reserve-label">Voyageurs</span>
+                        <span class="mini-reserve-value">2 adultes</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="mini-cta mini-cta-dark">Confirmer la réservation</button>
+                  <p class="mini-reserve-info">Annulation gratuite jusqu'à 48h avant l'arrivée.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reflet glissant subtil (effet écran allumé premium) -->
+            <div class="screen-reflection"></div>
+          </div>
+
+          <!-- iPhone : version mobile statique du site Maison Aurea -->
+          <div class="iphone-screen" aria-hidden="true">
+            <div class="iphone-content">
+              <div class="iphone-status">9:41</div>
+              <div class="iphone-logo">
+                <span class="iphone-logo-mark">M</span>
+                Maison Aurea
+              </div>
+              <div class="iphone-hero-img"></div>
+              <div class="iphone-hero-title">Maison Aurea</div>
+              <div class="iphone-hero-sub">★★★★★ · Vue lac</div>
+              <div class="iphone-cta">Réserver</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track des 4 cartes flottantes : absolute sur desktop, carrousel scrollable sur mobile -->
+        <div class="float-cards-track">
+          <div class="float-card float-card-tl">
+            <div class="float-card-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="9" r="6.5"/><circle cx="9" cy="9" r="2.5"/>
+              </svg>
+            </div>
+            <div class="float-card-text">
+              <strong>Visite 3D intégrée</strong>
+              <span>Au cœur du site</span>
+            </div>
+          </div>
+
+          <div class="float-card float-card-tr">
+            <div class="float-card-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 1.5L11 6L16 6.5L12 10L13 15L9 12.5L5 15L6 10L2 6.5L7 6Z"/>
+              </svg>
+            </div>
+            <div class="float-card-text">
+              <strong>Design premium</strong>
+              <span>Identité luxueuse</span>
+            </div>
+          </div>
+
+          <div class="float-card float-card-bl">
+            <div class="float-card-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="2" width="10" height="14" rx="2"/><path d="M8 13h2"/>
+              </svg>
+            </div>
+            <div class="float-card-text">
+              <strong>Mobile-first</strong>
+              <span>Fluide partout</span>
+            </div>
+          </div>
+
+          <div class="float-card float-card-br">
+            <div class="float-card-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 14L7 10L10 13L15 8M11 8h4v4"/>
+              </svg>
+            </div>
+            <div class="float-card-text">
+              <strong>+47% conversion</strong>
+              <span>Réservations boostées</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 3 : Timeline minimaliste 4 étapes -->
+    <div class="web-timeline fade-in" id="web-timeline">
+      <div class="web-timeline-header">
+        <span class="section-eyebrow section-eyebrow--underlined">Notre méthode</span>
+        <h3>De l'idée au site en ligne.</h3>
+      </div>
+      <div class="web-timeline-track">
+        <div class="web-tl-step">
+          <div class="web-tl-img"><img src="process-01-brief.png" alt="" aria-hidden="true" /></div>
+          <div class="web-tl-meta">
+            <span class="web-tl-num">01</span>
+            <span class="web-tl-label">Brief</span>
+          </div>
+        </div>
+        <div class="web-tl-step">
+          <div class="web-tl-img"><img src="process-02-maquette.png" alt="" aria-hidden="true" /></div>
+          <div class="web-tl-meta">
+            <span class="web-tl-num">02</span>
+            <span class="web-tl-label">Maquette</span>
+          </div>
+        </div>
+        <div class="web-tl-step">
+          <div class="web-tl-img"><img src="process-03-dev.png" alt="" aria-hidden="true" /></div>
+          <div class="web-tl-meta">
+            <span class="web-tl-num">03</span>
+            <span class="web-tl-label">Développement</span>
+          </div>
+        </div>
+        <div class="web-tl-step">
+          <div class="web-tl-img"><img src="process-04-mise-en-ligne.png" alt="" aria-hidden="true" /></div>
+          <div class="web-tl-meta">
+            <span class="web-tl-num">04</span>
+            <span class="web-tl-label">Mise en ligne</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 4 : CTA final dual + ligne d'inclusions -->
+    <div class="cta-final fade-in">
+      <h3>Prêt à valoriser votre établissement en ligne ?</h3>
+      <p>Devis personnalisé sous 48h, sans engagement.</p>
+      <div class="cta-buttons">
+        <a href="#contact" class="btn btn-primary" data-preselect-service="site-internet">
+          Créer mon site avec visite 3D
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#site-exemple" class="btn btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 2L11 7L3 12V2Z"/></svg>
+          Voir un exemple
+        </a>
+      </div>
+      <ul class="cta-includes-line" aria-label="Tout est inclus">
+        <li>Site sur-mesure</li>
+        <li>Visite 3D intégrée</li>
+        <li>Responsive mobile</li>
+        <li>SEO optimisé</li>
+        <li>Hébergement inclus</li>
+        <li>Support réactif</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SECTION DOOH (refonte split horizontal data-driven V32) ===== -->
+<section class="dooh-section" id="dooh">
+  <div class="dooh-bg-decor" aria-hidden="true"></div>
+
+  <div class="container">
+
+    <!-- Bloc 1 : Hero épuré -->
+    <div class="dooh-hero fade-in">
+      <img class="section-hero-logo" src="logo-full.png" alt="FollowView3D" />
+      <span class="section-eyebrow section-eyebrow--hero">Écrans dynamiques</span>
+      <h2>L'attention de vos clients, <span class="dooh-accent">amplifiée.</span></h2>
+      <p class="dooh-hero-subtitle">
+        Des <strong>écrans professionnels haute luminosité</strong> installés en vitrine ou en boutique qui diffusent vos contenus en boucle : visites virtuelles, promotions, photos, vidéos. Pilotables à distance depuis n'importe où, vos messages se mettent à jour en quelques secondes selon vos besoins.
+      </p>
+      <p class="dooh-hero-subtitle">
+        Vitrine active <strong>24/7 même portes fermées</strong>, captation immédiate du regard des passants, <strong>+47% d'interaction client</strong> par rapport à une vitrine statique : vos espaces deviennent un média qui travaille pour vous, en continu.
+      </p>
+      <p class="dooh-hero-subtitle">
+        Pour les commerces, hôtels et restaurants qui veulent <strong>transformer leur point de vente en expérience digitale</strong>, les écrans dynamiques sont l'investissement le plus rentable : visibilité maximale, contenu modulable, retour sur investissement rapide.
+      </p>
+    </div>
+
+    <!-- Bloc 2 : Split horizontal asymétrique image + 3 stats -->
+    <div class="dooh-split fade-in">
+      <!-- Côté gauche : carrousel auto-défilant 4 slides DOOH (Ken Burns + fade) -->
+      <div class="dooh-split-image">
+        <div class="dooh-carousel" data-autoplay-interval="3000">
+          <div class="dooh-slides">
+            <div class="dooh-slide is-active">
+              <img src="dooh-01-bellmont.jpg" alt="Totem digital FollowView3D devant un hôtel premium en pleine rue" />
+            </div>
+            <div class="dooh-slide">
+              <img src="dooh-02-riverside.jpg" alt="Borne digitale d'accueil dans un établissement de santé Riverside Health" loading="lazy" />
+            </div>
+            <div class="dooh-slide">
+              <img src="dooh-03-eclat.jpg" alt="Écran dynamique mural dans un salon de coiffure Éclat Beauté & Style" loading="lazy" />
+            </div>
+            <div class="dooh-slide">
+              <img src="dooh-04-grand-luxe.jpg" alt="Écran dynamique en réception d'un hôtel Grand Luxe" loading="lazy" />
+            </div>
+          </div>
+          <!-- Dots cliquables style Instagram (auto-progression visible) -->
+          <div class="dooh-dots" role="tablist" aria-label="Navigation du carrousel d'écrans dynamiques">
+            <button type="button" class="dooh-dot is-active" data-slide="0" role="tab" aria-label="Slide 1 — Hôtel Bellmont"></button>
+            <button type="button" class="dooh-dot" data-slide="1" role="tab" aria-label="Slide 2 — Riverside Health"></button>
+            <button type="button" class="dooh-dot" data-slide="2" role="tab" aria-label="Slide 3 — Salon Éclat"></button>
+            <button type="button" class="dooh-dot" data-slide="3" role="tab" aria-label="Slide 4 — Grand Luxe Hotel"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Côté droit : 3 stats data-driven -->
+      <div class="dooh-stats">
+        <div class="dooh-stat">
+          <div class="dooh-stat-row">
+            <span class="dooh-stat-num">×4</span>
+          </div>
+          <p class="dooh-stat-text">Plus d'attention captée qu'une affiche statique.</p>
+        </div>
+        <div class="dooh-stat">
+          <div class="dooh-stat-row">
+            <span class="dooh-stat-num">+47<span class="dooh-stat-sym">%</span></span>
+          </div>
+          <p class="dooh-stat-text">D'interaction client en plus directement en vitrine.</p>
+        </div>
+        <div class="dooh-stat">
+          <div class="dooh-stat-row">
+            <span class="dooh-stat-num">24<span class="dooh-stat-sym">/7</span></span>
+          </div>
+          <p class="dooh-stat-text">Vitrine active en continu, même portes fermées.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 2.5 : Timeline minimaliste 4 étapes (V59 : symétrie avec section Site internet)
+         Pattern visuel calqué sur .web-timeline pour cohérence inter-sections -->
+    <div class="dooh-timeline fade-in" id="dooh-timeline">
+      <div class="dooh-timeline-header">
+        <span class="section-eyebrow section-eyebrow--underlined">Les étapes</span>
+        <h3>De l'idée à la diffusion.</h3>
+      </div>
+      <div class="dooh-timeline-track">
+        <div class="dooh-tl-step">
+          <div class="dooh-tl-img"><img src="process-01-brief.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+          <div class="dooh-tl-meta">
+            <span class="dooh-tl-num">01</span>
+            <span class="dooh-tl-label">Brief</span>
+          </div>
+        </div>
+        <div class="dooh-tl-step">
+          <div class="dooh-tl-img"><img src="process-02-maquette.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+          <div class="dooh-tl-meta">
+            <span class="dooh-tl-num">02</span>
+            <span class="dooh-tl-label">Maquette</span>
+          </div>
+        </div>
+        <div class="dooh-tl-step">
+          <div class="dooh-tl-img"><img src="process-03-dev.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+          <div class="dooh-tl-meta">
+            <span class="dooh-tl-num">03</span>
+            <span class="dooh-tl-label">Développement</span>
+          </div>
+        </div>
+        <div class="dooh-tl-step">
+          <div class="dooh-tl-img"><img src="process-04-diffusion.jpg" alt="" aria-hidden="true" loading="lazy" /></div>
+          <div class="dooh-tl-meta">
+            <span class="dooh-tl-num">04</span>
+            <span class="dooh-tl-label">Mise en ligne</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 3 : CTA final dual + ligne d'inclusions -->
+    <div class="cta-final fade-in">
+      <h3>Prêt à équiper votre point de vente ?</h3>
+      <p>Audit gratuit, devis personnalisé sous 48h.</p>
+      <div class="cta-buttons">
+        <a href="#contact" class="btn btn-primary" data-preselect-service="ecrans-dooh">
+          Équiper mon établissement
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-ghost" data-preselect-service="ecrans-dooh">
+          Recevoir un audit gratuit
+        </a>
+      </div>
+      <ul class="cta-includes-line" aria-label="Tout est inclus">
+        <li>Écrans premium</li>
+        <li>CMS cloud</li>
+        <li>Installation pro</li>
+        <li>Création de contenus</li>
+        <li>Maintenance</li>
+        <li>Connectivité 4G/Wi-Fi</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section class="targets-section" id="cibles">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow section-eyebrow--question">Pour qui ?</span>
+      <h2>Pensé pour vous démarquer.</h2>
+    </div>
+    <div class="targets-grid">
+      <div class="target-card fade-in">
+        <div class="target-image target-1"></div>
+        <div class="target-overlay"><h3>Hôtels</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-2"></div>
+        <div class="target-overlay"><h3>Restaurants</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-3"></div>
+        <div class="target-overlay"><h3>Salons de coiffure</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-4"></div>
+        <div class="target-overlay"><h3>Établissements de santé</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-5"></div>
+        <div class="target-overlay"><h3>Showrooms</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-6"></div>
+        <div class="target-overlay"><h3>Commerces premium</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-7"></div>
+        <div class="target-overlay"><h3>Agences immobilières</h3></div>
+      </div>
+      <div class="target-card fade-in">
+        <div class="target-image target-8"></div>
+        <div class="target-overlay"><h3>Espaces professionnels</h3></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION VALUE ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-eyebrow section-eyebrow--question">Pourquoi la 3D ?</span>
+      <h2>Voir avant de réserver.</h2>
+    </div>
+    <div class="value-grid">
+      <div class="value-card fade-in">
+        <div class="value-img">
+          <img src="value-rassurer.jpg" alt="" aria-hidden="true" loading="lazy" />
+          <div class="value-icon">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 23s-9-5-9-13a9 9 0 0 1 18 0c0 8-9 13-9 13z"/><circle cx="13" cy="10" r="3"/></svg>
+          </div>
+        </div>
+        <div class="value-text">
+          <h3>Rassurer</h3>
+          <p>Vos clients savent ce qu'ils vont trouver.</p>
+        </div>
+      </div>
+      <div class="value-card fade-in">
+        <div class="value-img">
+          <img src="value-valoriser.jpg" alt="" aria-hidden="true" loading="lazy" />
+          <div class="value-icon">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L16 9L23 9.5L18 14L19.5 21L13 17.5L6.5 21L8 14L3 9.5L10 9L13 2Z"/></svg>
+          </div>
+        </div>
+        <div class="value-text">
+          <h3>Valoriser</h3>
+          <p>Une présentation premium de votre lieu.</p>
+        </div>
+      </div>
+      <div class="value-card fade-in">
+        <div class="value-img">
+          <img src="value-convertir.jpg" alt="" aria-hidden="true" loading="lazy" />
+          <div class="value-icon">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg>
+          </div>
+        </div>
+        <div class="value-text">
+          <h3>Convertir</h3>
+          <p>Jusqu'à +47% de réservations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION ZONE ===== -->
+<section class="zone-section">
+  <div class="container">
+    <div class="zone-card fade-in">
+      <div class="zone-text">
+        <span class="section-eyebrow section-eyebrow--underlined">Zone d'intervention</span>
+        <h2 style="margin-top: 14px;">Paris, Île-de-France, toute la France.</h2>
+        <p>Studio mobile pour tous types d'établissements.</p>
+        <div class="zone-info">
+          <div class="zone-info-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 1C6 1 3 4 3 8c0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z"/><circle cx="10" cy="8" r="2.5"/></svg>
+          </div>
+          <div class="zone-info-text">
+            <strong>Nos locaux</strong>
+            <span>10 rue de la Félicité, 75017 Paris</span>
+          </div>
+        </div>
+      </div>
+      <div class="zone-map">
+        <img src="france-map.png" alt="Carte de France — FollowView3D intervient à Paris, en Île-de-France et partout en France" class="france-map-img" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION CONTACT ===== -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <!-- Logo signature centré en haut (V86 : option B — logo centré + reste aligné à gauche) -->
+    <img class="contact-section-logo fade-in" src="logo-full.png" alt="FollowView3D" />
+    <div class="contact-grid">
+      <div class="contact-info fade-in">
+        <span class="section-eyebrow section-eyebrow--underlined">Contact</span>
+        <h2 style="margin-top: 14px;">Parlons de votre projet.</h2>
+        <p>Devis personnalisé sous 48h.</p>
+        <ul class="contact-list">
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 1C5 1 2 4 2 7c0 5 7 10 7 10s7-5 7-10c0-3-3-6-7-6z"/><circle cx="9" cy="7" r="2.5"/></svg>
+            </div>
+            <span>10 rue de la Félicité, 75017 Paris</span>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4l7 5 7-5M2 4v10h14V4H2z"/></svg>
+            </div>
+            <a href="mailto:contact@followview3d.fr" style="color:inherit; transition:color 0.2s;" onmouseover="this.style.color='var(--graphite)'" onmouseout="this.style.color='inherit'">contact@followview3d.fr</a>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <!-- V95 : icône téléphone (numéro unique +33 1 47 89 60 10 partout sur le site,
+                   le second numéro 60 15 est réservé au FAB téléphone flottant mobile) -->
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 13v3a1 1 0 01-1 1c-7 0-13-6-13-13a1 1 0 011-1h3l1 4-2 1c1 3 3 5 6 6l1-2 4 1z"/></svg>
+            </div>
+            <a href="tel:+33147896010" style="color:inherit; transition:color 0.2s;" onmouseover="this.style.color='var(--graphite)'" onmouseout="this.style.color='inherit'">+33 1 47 89 60 10</a>
+          </li>
+          <li>
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="9" r="7"/><path d="M5 9l3 3 5-6"/></svg>
+            </div>
+            <span>Réponse sous 48h ouvrées</span>
+          </li>
+        </ul>
+      </div>
+      <!-- Formulaire de demande de devis envoyé via Netlify Forms (V63)
+           name="quote-request" : nom du formulaire dans le dashboard Netlify > Forms
+           data-netlify="true" : active la collection automatique des soumissions
+           netlify-honeypot="bot-field" : champ caché anti-spam (doit rester vide pour les humains)
+           Configuration côté Netlify (à faire 1 fois) :
+             1. Déployer le site sur Netlify (le formulaire est détecté automatiquement au build)
+             2. Aller dans Site > Forms > quote-request > Settings & Notifications
+             3. Ajouter "Email notification" avec destinataire = contact@followview3d.fr -->
+      <form
+        class="contact-form fade-in"
+        id="quoteForm"
+        name="quote-request"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/?form=success">
+        <!-- Champ caché requis par Netlify pour identifier le formulaire (AJAX et fallback) -->
+        <input type="hidden" name="form-name" value="quote-request">
+        <!-- Honeypot anti-spam : invisible pour les humains, les bots le remplissent et sont bloqués -->
+        <p class="form-honeypot" aria-hidden="true">
+          <label>Ne pas remplir ce champ : <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+        </p>
+        <div class="form-group">
+          <label for="service">Service souhaité *</label>
+          <select id="service" name="service" required>
+            <option value="">Sélectionner un service</option>
+            <option value="visite-3d">Visite virtuelle 3D / 360°</option>
+            <option value="site-internet">Site internet</option>
+            <option value="ecrans-dooh">Écrans dynamiques (DOOH)</option>
+            <option value="plusieurs">Plusieurs services</option>
+            <option value="conseil">Je ne sais pas encore — conseillez-moi</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+          </div>
+          <div class="form-group">
+            <label for="etablissement">Établissement *</label>
+            <input type="text" id="etablissement" name="etablissement" placeholder="Nom de l'établissement" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78">
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="vous@email.fr" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ville">Ville *</label>
+            <input type="text" id="ville" name="ville" placeholder="Paris" required>
+          </div>
+          <div class="form-group">
+            <label for="projet">Type d'établissement *</label>
+            <select id="projet" name="projet" required>
+              <option value="">Sélectionner</option>
+              <option value="hotel">Hôtel</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="sante">Établissement de santé</option>
+              <option value="showroom">Showroom</option>
+              <option value="commerce">Commerce</option>
+              <option value="immobilier">Agence immobilière</option>
+              <option value="bureau">Espace professionnel</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Décrivez votre projet, la surface approximative, vos délais..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          <span class="form-submit-label">Demander un devis</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <!-- Message de confirmation (caché par défaut, affiché en JS après envoi réussi) -->
+        <div class="form-feedback" id="formFeedback" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo logo-full">
+          <img src="logo-full.png" alt="FollowView3D" />
+        </a>
+        <p>Visites virtuelles 3D & 360°, sites internet sur-mesure et écrans dynamiques pour hôtels, commerces, restaurants et espaces professionnels. Basé à Paris, disponible partout en France.</p>
+        <div class="footer-socials">
+          <a href="https://instagram.com/followview_3d" target="_blank" rel="noopener" class="social-link social-instagram" aria-label="Instagram @followview_3d">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/in/follow-view-3d-591728384" target="_blank" rel="noopener" class="social-link social-linkedin" aria-label="LinkedIn FollowView3D">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="https://m.facebook.com/profile.php?id=61580598463575" target="_blank" rel="noopener" class="social-link social-facebook" aria-label="Facebook FollowView3D">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#demo">Visite virtuelle 3D</a></li>
+          <li><a href="#dooh">Écrans dynamiques</a></li>
+          <li><a href="#site-internet">Site vitrine 3D</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Entreprise</h4>
+        <ul>
+          <li><a href="#cibles">Cibles</a></li>
+          <li><a href="#process">Étapes</a></li>
+          <li><a href="#demo">Démo</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2026</span> FollowView3D · 10 rue de la Félicité, 75017 Paris</span>
+      <div class="footer-bottom-links">
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="confidentialite.html">Politique de confidentialité</a>
+        <a href="cgv.html">CGV</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile menu toggle
+const toggle = document.getElementById('menuToggle');
+const links = document.getElementById('navLinks');
+toggle.addEventListener('click', () => {
+  links.classList.toggle('mobile-open');
+});
+links.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => links.classList.remove('mobile-open'));
+});
+
+// V88 : Gestion des dropdowns nav (Démo + Étapes)
+// Sur desktop : hover CSS suffit (déjà géré dans .nav-dropdown:hover)
+// Sur mobile/tactile : click sur le bouton trigger pour ouvrir/fermer
+(function navDropdowns() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  if (!dropdowns.length) return;
+
+  // Detection tactile pour adapter le comportement
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+  dropdowns.forEach(dropdown => {
+    const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+    const menu = dropdown.querySelector('.nav-dropdown-menu');
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = dropdown.dataset.open === 'true';
+      // Fermer tous les autres dropdowns d'abord
+      dropdowns.forEach(d => {
+        if (d !== dropdown) {
+          d.dataset.open = 'false';
+          const otherTrigger = d.querySelector('.nav-dropdown-trigger');
+          if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+      dropdown.dataset.open = isOpen ? 'false' : 'true';
+      trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
+
+    // Au clic sur un item du menu, fermer le dropdown + le menu mobile global
+    menu.querySelectorAll('a').forEach(item => {
+      item.addEventListener('click', () => {
+        dropdown.dataset.open = 'false';
+        trigger.setAttribute('aria-expanded', 'false');
+        links.classList.remove('mobile-open');
+      });
+    });
+  });
+
+  // Click outside pour fermer les dropdowns ouverts
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
+      dropdowns.forEach(d => {
+        d.dataset.open = 'false';
+        const t = d.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  // Escape ferme les dropdowns
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dropdowns.forEach(d => {
+        d.dataset.open = 'false';
+        const t = d.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+})();
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), index * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Nav : transition transparente → opaque après le hero principal
+const nav = document.querySelector('.nav');
+const heroMain = document.querySelector('.hero-main');
+const updateNav = () => {
+  const threshold = heroMain ? heroMain.offsetHeight * 0.85 : 100;
+  if (window.scrollY > threshold) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+};
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// Lecture automatique en boucle pour TOUTES les vidéos (hero principal + 3 cartes expertises)
+const allVideos = document.querySelectorAll('.hero-media video, .expertise-media video');
+allVideos.forEach(video => {
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.autoplay = true;
+
+  const tryPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay bloqué : on force la lecture à la première interaction utilisateur
+        const forcePlay = () => {
+          allVideos.forEach(v => v.play().catch(() => {}));
+          ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+            document.removeEventListener(evt, forcePlay)
+          );
+        };
+        ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+          document.addEventListener(evt, forcePlay, { once: true, passive: true })
+        );
+      });
+    }
+  };
+
+  tryPlay();
+  video.addEventListener('canplay', tryPlay, { once: true });
+});
+
+// Reprise auto quand l'onglet redevient visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    allVideos.forEach(v => {
+      if (v.paused) v.play().catch(() => {});
+    });
+  }
+});
+
+// Pré-sélection automatique du service dans le formulaire
+// Quand l'utilisateur clique sur "Demander un devis" depuis une section spécifique,
+// on pré-remplit le select "Service souhaité" avec la valeur correspondante.
+document.querySelectorAll('[data-preselect-service]').forEach(link => {
+  link.addEventListener('click', () => {
+    const serviceValue = link.getAttribute('data-preselect-service');
+    const serviceSelect = document.getElementById('service');
+    if (serviceSelect && serviceValue) {
+      // Léger délai pour laisser le scroll smooth se déclencher d'abord
+      setTimeout(() => {
+        serviceSelect.value = serviceValue;
+        // Petit feedback visuel : on flash le select pour indiquer qu'il a été pré-rempli
+        serviceSelect.style.transition = 'box-shadow 0.4s ease';
+        serviceSelect.style.boxShadow = '0 0 0 4px rgba(232, 172, 55, 0.3)';
+        setTimeout(() => {
+          serviceSelect.style.boxShadow = '';
+        }, 1200);
+      }, 600);
+    }
+  });
+});
+
+// Fix bug iframe Matterport qui prend le focus au chargement et scroll vers la section
+// (combine avec tabindex=-1 sur les iframes pour ceinture+bretelles)
+// On force un retour en haut de page si :
+// - L'URL ne contient pas d'ancre (#)
+// - L'utilisateur n'a pas encore scrollé manuellement (page fraîchement chargée)
+(function fixMatterportAutoFocus() {
+  if (window.location.hash) return; // Si l'utilisateur arrive avec une ancre, on respecte sa demande
+
+  const checkAndScrollTop = () => {
+    if (window.scrollY > 50 && !sessionStorage.getItem('userScrolled')) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  };
+
+  // Détecter le scroll utilisateur volontaire
+  let userScrollDetected = false;
+  const scrollHandler = () => {
+    userScrollDetected = true;
+    sessionStorage.setItem('userScrolled', '1');
+    window.removeEventListener('wheel', scrollHandler, { passive: true });
+    window.removeEventListener('touchmove', scrollHandler, { passive: true });
+  };
+  window.addEventListener('wheel', scrollHandler, { passive: true });
+  window.addEventListener('touchmove', scrollHandler, { passive: true });
+
+  // Plusieurs vérifications dans les premières secondes (l'iframe peut se charger tardivement)
+  setTimeout(checkAndScrollTop, 100);
+  setTimeout(checkAndScrollTop, 500);
+  setTimeout(checkAndScrollTop, 1500);
+  setTimeout(checkAndScrollTop, 3000);
+
+  // Reset à la prochaine navigation
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('userScrolled');
+  });
+})();
+
+// ===== Mini-site interactif Maison Aurea : navigation entre les 3 pages =====
+(function miniSiteNavigation() {
+  const laptop = document.querySelector('.laptop-screen');
+  if (!laptop) return;
+
+  const links = laptop.querySelectorAll('.mini-nav-link');
+  const pages = laptop.querySelectorAll('.mini-page');
+  const ctaTriggers = laptop.querySelectorAll('[data-page]'); // tous les éléments avec data-page (links + CTAs)
+
+  let userInteracted = false;
+  let autoTimer = null;
+
+  const switchToPage = (pageName) => {
+    // Désactiver toutes les pages
+    pages.forEach(p => p.classList.remove('is-active'));
+    // Activer la page demandée
+    const target = laptop.querySelector(`.mini-page-${pageName}`);
+    if (target) target.classList.add('is-active');
+
+    // Mettre à jour la nav (uniquement les boutons qui sont dans la nav)
+    links.forEach(l => {
+      l.classList.toggle('is-active', l.dataset.page === pageName);
+    });
+
+    // Mémoriser la page courante
+    laptop.setAttribute('data-active-page', pageName);
+  };
+
+  // Click handlers sur tous les éléments cliquables (nav + CTAs)
+  ctaTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      userInteracted = true;
+      if (autoTimer) {
+        clearTimeout(autoTimer);
+        autoTimer = null;
+      }
+      switchToPage(trigger.dataset.page);
+    });
+  });
+
+  // Démarrage : auto-démo après 4s si l'utilisateur n'a pas cliqué
+  // (montre la visite 3D, puis revient à l'accueil après 8s)
+  const startAutoDemo = () => {
+    if (userInteracted) return;
+    autoTimer = setTimeout(() => {
+      if (!userInteracted) {
+        switchToPage('visite');
+        autoTimer = setTimeout(() => {
+          if (!userInteracted) {
+            switchToPage('reserver');
+            autoTimer = setTimeout(() => {
+              if (!userInteracted) {
+                switchToPage('accueil');
+                startAutoDemo(); // boucle continue tant que pas d'interaction
+              }
+            }, 4000);
+          }
+        }, 7000);
+      }
+    }, 5000);
+  };
+
+  // Démarrer l'auto-démo seulement quand le mockup entre dans le viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !userInteracted && !autoTimer) {
+        startAutoDemo();
+      }
+    });
+  }, { threshold: 0.5 });
+  observer.observe(laptop);
+})();
+
+// ===== Carrousel DOOH : auto-défilement avec dots Instagram + Ken Burns =====
+(function doohCarousel() {
+  const carousel = document.querySelector('.dooh-carousel');
+  if (!carousel) return;
+
+  const slides = carousel.querySelectorAll('.dooh-slide');
+  const dots = carousel.querySelectorAll('.dooh-dot');
+  if (slides.length === 0 || dots.length === 0) return;
+
+  const interval = parseInt(carousel.dataset.autoplayInterval, 10) || 3000;
+  // Synchronise la durée de la barre de progression CSS avec l'intervalle JS
+  carousel.style.setProperty('--dooh-interval', interval + 'ms');
+
+  let currentIndex = 0;
+  let timer = null;
+  let isVisible = false;
+
+  // Force un reflow pour replay l'animation CSS (Ken Burns image + progression dot)
+  // Subtilité : on ne veut pas que le retrait de is-active fasse glisser la slide hors champ.
+  // On désactive temporairement la transition de translation, on bascule la classe, puis on restaure.
+  const replaySlideAnimations = () => {
+    const activeSlide = slides[currentIndex];
+    const activeDot = dots[currentIndex];
+    // Snapshot du style transition existant et désactivation
+    const originalTransition = activeSlide.style.transition;
+    activeSlide.style.transition = 'none';
+    activeSlide.classList.remove('is-active');
+    activeDot.classList.remove('is-active');
+    void activeSlide.offsetWidth; // reflow
+    activeSlide.classList.add('is-active');
+    activeDot.classList.add('is-active');
+    // Restaure la transition au prochain frame (sinon le 'transition: none' affecte le ré-add)
+    requestAnimationFrame(() => {
+      activeSlide.style.transition = originalTransition;
+    });
+  };
+
+  // Variante : replay seulement le dot (utilisé sur clic du dot actif)
+  const replayDotAnimation = (dot) => {
+    dot.classList.remove('is-active');
+    void dot.offsetWidth;
+    dot.classList.add('is-active');
+  };
+
+  const goToSlide = (index, fromUserClick = false, reverse = false) => {
+    if (index === currentIndex && !fromUserClick) return;
+
+    const slidesContainer = carousel.querySelector('.dooh-slides');
+    const previousSlide = slides[currentIndex];
+    const previousDot = dots[currentIndex];
+
+    // V62 : applique/retire la classe is-reversed sur le container pour inverser visuellement
+    // la direction de glissement (utilisé quand l'utilisateur swipe vers la droite)
+    if (reverse) {
+      slidesContainer.classList.add('is-reversed');
+    } else {
+      slidesContainer.classList.remove('is-reversed');
+    }
+
+    // Nettoyer toute trace de transition précédente sur les slides non-impliquées
+    slides.forEach((s, i) => {
+      if (i !== currentIndex && i !== index) {
+        s.classList.remove('is-active', 'is-leaving');
+      }
+    });
+
+    // L'ancienne slide sort vers la gauche (ou la droite si reverse)
+    previousSlide.classList.remove('is-active');
+    previousSlide.classList.add('is-leaving');
+    previousDot.classList.remove('is-active');
+
+    // Après la fin de la transition, on retire is-leaving (la slide repart hors champ)
+    setTimeout(() => {
+      previousSlide.classList.remove('is-leaving');
+    }, 900); // synchronisé avec la durée de transition CSS
+
+    currentIndex = index;
+    slides[currentIndex].classList.add('is-active');
+    // Replay l'animation de la barre de progression sur le nouveau dot
+    replayDotAnimation(dots[currentIndex]);
+  };
+
+  const nextSlide = () => {
+    const next = (currentIndex + 1) % slides.length;
+    goToSlide(next);
+  };
+
+  const prevSlide = () => {
+    const prev = (currentIndex - 1 + slides.length) % slides.length;
+    goToSlide(prev, false, true); // reverse=true pour glissement gauche→droite
+  };
+
+  const startAutoplay = () => {
+    if (timer) return;
+    if (!isVisible) return;
+    timer = setInterval(nextSlide, interval);
+  };
+
+  const stopAutoplay = () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  };
+
+  const restartAutoplay = () => {
+    stopAutoplay();
+    startAutoplay();
+  };
+
+  // Click sur un dot : aller à la slide + redémarrer le timer (UX user-controlled)
+  // V62 : détecte la direction (avant/arrière) pour choisir l'animation appropriée
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      if (i === currentIndex) {
+        // Si on clique sur le dot actif : on relance juste l'animation de progression
+        replayDotAnimation(dot);
+        restartAutoplay();
+        return;
+      }
+      const reverse = i < currentIndex;
+      goToSlide(i, true, reverse);
+      restartAutoplay();
+    });
+  });
+
+  // ===== V62 : Swipe tactile + drag souris via Pointer Events =====
+  // Permet à l'utilisateur de glisser manuellement d'une photo à l'autre.
+  // Seuil de 50px de déplacement horizontal pour déclencher un changement de slide.
+  const slidesContainer = carousel.querySelector('.dooh-slides');
+  const SWIPE_THRESHOLD = 50;
+  let dragState = null; // { startX, startY, pointerId, isHorizontal }
+
+  const onPointerDown = (e) => {
+    // Ignorer si le pointer démarre sur un dot (sinon clic dot = mini-swipe involontaire)
+    if (e.target.closest('.dooh-dots')) return;
+    // Ignorer les clics droits / molette
+    if (e.button !== undefined && e.button !== 0) return;
+
+    dragState = {
+      startX: e.clientX,
+      startY: e.clientY,
+      pointerId: e.pointerId,
+      isHorizontal: null, // déterminé au 1er move (pour ne pas bloquer le scroll vertical)
+    };
+    slidesContainer.classList.add('is-dragging');
+    // Pause de l'autoplay pendant le drag (lecture confortable pour l'utilisateur)
+    stopAutoplay();
+    carousel.classList.add('is-paused');
+  };
+
+  const onPointerMove = (e) => {
+    if (!dragState || e.pointerId !== dragState.pointerId) return;
+    const deltaX = e.clientX - dragState.startX;
+    const deltaY = e.clientY - dragState.startY;
+
+    // Détermination du sens dominant au 1er mouvement significatif (>8px)
+    if (dragState.isHorizontal === null) {
+      const absDeltaX = Math.abs(deltaX);
+      const absDeltaY = Math.abs(deltaY);
+      if (absDeltaX < 8 && absDeltaY < 8) return; // mouvement trop petit, on attend
+      dragState.isHorizontal = absDeltaX > absDeltaY;
+      if (!dragState.isHorizontal) {
+        // L'utilisateur scrolle verticalement : on annule le drag pour ne pas gêner
+        slidesContainer.classList.remove('is-dragging');
+        dragState = null;
+        return;
+      }
+      // On capture le pointer pour continuer à recevoir les events même si on sort du carrousel
+      try { slidesContainer.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+
+    // Drag horizontal en cours : on prévient le scroll natif (uniquement si supporté)
+    if (e.cancelable && dragState.isHorizontal) e.preventDefault();
+  };
+
+  const onPointerUp = (e) => {
+    if (!dragState || e.pointerId !== dragState.pointerId) return;
+    const deltaX = e.clientX - dragState.startX;
+    const wasHorizontal = dragState.isHorizontal === true;
+    slidesContainer.classList.remove('is-dragging');
+    try { slidesContainer.releasePointerCapture(e.pointerId); } catch (_) {}
+    dragState = null;
+
+    // Évalue le seuil de swipe
+    let swiped = false;
+    if (wasHorizontal && Math.abs(deltaX) >= SWIPE_THRESHOLD) {
+      swiped = true;
+      if (deltaX < 0) {
+        // Swipe vers la gauche → slide suivante
+        nextSlide();
+      } else {
+        // Swipe vers la droite → slide précédente
+        prevSlide();
+      }
+    }
+    // Reprise de l'autoplay (si visible)
+    carousel.classList.remove('is-paused');
+    // Si pas de swipe : on relance les anims sur la slide actuelle (sinon nextSlide/prevSlide
+    // l'ont déjà fait via leur appel à goToSlide → replayDotAnimation)
+    if (!swiped) replaySlideAnimations();
+    startAutoplay();
+  };
+
+  slidesContainer.addEventListener('pointerdown', onPointerDown);
+  slidesContainer.addEventListener('pointermove', onPointerMove, { passive: false });
+  slidesContainer.addEventListener('pointerup', onPointerUp);
+  slidesContainer.addEventListener('pointercancel', onPointerUp);
+  // Empêche le drag-and-drop natif des images sur certains navigateurs
+  slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
+
+  // Pause au survol (desktop uniquement, donne une pause de lecture si l'utilisateur regarde)
+  carousel.addEventListener('mouseenter', () => {
+    carousel.classList.add('is-paused');
+    stopAutoplay();
+  });
+  carousel.addEventListener('mouseleave', () => {
+    carousel.classList.remove('is-paused');
+    // Replay les anims pour synchroniser progression visuelle et timer
+    replaySlideAnimations();
+    startAutoplay();
+  });
+
+  // IntersectionObserver : ne défile que quand le carrousel est visible (économise les perfs/batterie)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        isVisible = true;
+        // Si c'est la 1re fois qu'on devient visible, on replay les animations
+        // (sinon le dot 0 et le Ken Burns sont déjà finis depuis le page load)
+        if (!timer) replaySlideAnimations();
+        startAutoplay();
+      } else {
+        isVisible = false;
+        stopAutoplay();
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(carousel);
+})();
+
+
+(function matterportDemoTabs() {
+  const tabs = document.querySelectorAll('.mp-tab');
+  const iframe = document.getElementById('mp-demo-iframe');
+  const frame = iframe ? iframe.closest('.matterport-demo-frame') : null;
+  if (!tabs.length || !iframe || !frame) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Si déjà actif, ne rien faire
+      if (tab.classList.contains('is-active')) return;
+
+      const mpId = tab.dataset.mpId;
+      const mpLabel = tab.dataset.mpLabel;
+      if (!mpId) return;
+
+      // Désactiver les autres onglets
+      tabs.forEach(t => {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      // Activer l'onglet cliqué
+      tab.classList.add('is-active');
+      tab.setAttribute('aria-selected', 'true');
+
+      // Effet de chargement (iframe légèrement transparente le temps du chargement)
+      frame.classList.add('is-loading');
+
+      // Construire la nouvelle URL et l'appliquer
+      const newUrl = `https://my.matterport.com/show/?ref=em&m=${mpId}&lang=fr&play=1`;
+      iframe.src = newUrl;
+      iframe.title = `Démo Matterport — Visite virtuelle d'${mpLabel.toLowerCase().startsWith('a') || mpLabel.toLowerCase().startsWith('h') ? "un" : "un"} ${mpLabel}`;
+
+      // Retirer l'effet de loading après que l'iframe ait chargé
+      iframe.addEventListener('load', () => {
+        frame.classList.remove('is-loading');
+      }, { once: true });
+
+      // Fallback : retirer le loading après 4s même si pas de load event
+      setTimeout(() => frame.classList.remove('is-loading'), 4000);
+    });
+  });
+})();
+
+// ===== V63 : Soumission AJAX du formulaire de devis (Netlify Forms) =====
+// Évite le rechargement de page brut : envoie en fetch POST et affiche un feedback in-place.
+// Si Netlify n'est pas disponible (ex: dev local), bascule sur un fallback qui simule l'envoi.
+(function quoteFormHandler() {
+  const form = document.getElementById('quoteForm');
+  if (!form) return;
+
+  const submitBtn = form.querySelector('.form-submit');
+  const submitLabel = form.querySelector('.form-submit-label');
+  const feedback = form.querySelector('#formFeedback');
+  if (!submitBtn || !feedback) return;
+
+  // Conserve le label initial pour pouvoir restaurer après l'envoi
+  const originalLabel = submitLabel ? submitLabel.textContent : 'Demander un devis';
+
+  const showFeedback = (message, isError = false) => {
+    feedback.textContent = message;
+    feedback.classList.remove('is-success', 'is-error');
+    feedback.classList.add(isError ? 'is-error' : 'is-success');
+    feedback.classList.add('is-visible');
+  };
+
+  const hideFeedback = () => {
+    feedback.classList.remove('is-visible');
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Vérification HTML5 basique (déjà fait par les attributs required, mais on s'assure)
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    // Honeypot : si le champ caché bot-field est rempli, c'est probablement un bot, on ignore
+    const honeypotValue = form.querySelector('input[name="bot-field"]');
+    if (honeypotValue && honeypotValue.value.trim() !== '') {
+      // On simule un succès pour ne pas alerter le bot
+      showFeedback('Demande envoyée — nous vous recontactons sous 48h.');
+      form.reset();
+      return;
+    }
+
+    // État loading
+    submitBtn.setAttribute('aria-busy', 'true');
+    submitBtn.disabled = true;
+    if (submitLabel) submitLabel.textContent = 'Envoi en cours...';
+    hideFeedback();
+
+    // Préparation du payload pour Netlify Forms (format url-encoded requis)
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+    for (const [key, value] of formData.entries()) {
+      params.append(key, value);
+    }
+
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
+      });
+
+      if (response.ok) {
+        showFeedback('Demande envoyée — nous vous recontactons sous 48h.');
+        form.reset();
+      } else {
+        // Code HTTP non-2xx : Netlify a refusé la soumission
+        throw new Error('HTTP ' + response.status);
+      }
+    } catch (err) {
+      // En dev local (pas de Netlify), fetch / vers le serveur de dev échoue souvent.
+      // On affiche un message d'erreur explicite avec lien mailto en fallback.
+      console.warn('Form submission error:', err);
+      showFeedback(
+        'Le formulaire n\'a pas pu être envoyé. Merci de nous contacter directement par email à contact@followview3d.fr ou par téléphone au +33 1 47 89 60 10.',
+        true
+      );
+    } finally {
+      // Restauration du bouton
+      submitBtn.removeAttribute('aria-busy');
+      submitBtn.disabled = false;
+      if (submitLabel) submitLabel.textContent = originalLabel;
+    }
+  });
+})();
+
+// ===== V65 : Année dynamique du copyright dans le footer =====
+(function dynamicFooterYear() {
+  const el = document.getElementById('footerYear');
+  if (el) el.textContent = new Date().getFullYear();
+})();
+</script>
+
+<!-- ===== V86 : FAB (Floating Action Button) téléphone — mobile uniquement
+     Cliquer ouvre l'app téléphone avec le numéro mobile pré-rempli
+     Couleurs : bulle = jaune doré du logo / icône = gris-bleu (l'autre couleur du logo) ===== -->
+<a href="tel:+33147896015" class="fab-phone" aria-label="Appeler FollowView3D au +33 1 47 89 60 15">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+</a>
+
+</body>
+</html>
